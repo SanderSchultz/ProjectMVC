@@ -1,0 +1,18 @@
+using System;
+using System.Collections.Generic;
+
+namespace ProjectMVC.Models
+{
+    public class Post
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+        public DateTime Created { get; set; } = DateTime.UtcNow;
+        public int LikesCount { get; set; } = 0;
+		public string UserId { get; set; } = string.Empty;
+        public ApplicationUser User { get; set; } = null!;
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public ICollection<Like> Likes { get; set; } = new List<Like>();
+    }
+}

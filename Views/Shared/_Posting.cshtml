@@ -1,0 +1,136 @@
+
+@model IEnumerable<ProjectMVC.Models.PostDto>
+
+<div class="mt-8 flex flex-col gap-10 pb-16">
+    <div class="flex flex-col gap-10">
+        @foreach (var post in Model)
+        {
+            <div class="mt-16">
+                <div class="mx-auto w-full max-w-[80%] rounded-xl outline outline-1 outline-gray-300 lg:max-w-[60%] 2xl:max-w-[40%]">
+                    <div class="aspect-[4/3] overflow-hidden rounded-t-lg">
+                        <img src="@post.ImageUrl" alt="Post Image" width="600" height="400" class="h-full w-full object-cover" style="aspect-ratio: 600 / 400; object-fit: cover;">
+                    </div>
+                    <div class="rounded-b-lg bg-card p-4">
+                        <div class="mb-4 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+									<span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+										<span class="flex h-full w-full items-center justify-center rounded-full bg-muted">@post.User.Substring(0, 2).ToUpper()</span>
+									</span>
+                                <div>
+                                    <div class="font-medium">@post.User</div>
+                                    <div class="text-sm text-muted-foreground">@DateTime.UtcNow.ToString("M/d/yyyy, h:mm:ss tt")</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h2 class="text-l">@post.Title</h2>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9 like-button">
+                                        <svg class="h-4 w-4 heart-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+                                        <span class="sr-only">Like</span>
+                                    </button>
+                                    <button class="comment-button inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="closed">
+                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+                                        <span class="sr-only">View Comments</span>
+                                    </button>
+                                </div>
+                                <div class="text-sm font-medium">
+                                    <span class="text-primary">@post.LikesCount</span> likes
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 space-y-2">
+                            @if (post.Comments == null || post.Comments.Count == 0)
+                            {
+                                <p class="text-sm text-muted-foreground">No comments yet.</p>
+                            }
+                            else
+                            {
+                                @foreach (var comment in post.Comments)
+                                {
+                                    <div class="z-20 flex items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                                                <span class="flex h-full w-full items-center justify-center rounded-full bg-muted">@comment.User.Substring(0, 2).ToUpper()</span>
+                                            </span>
+                                            <div>
+                                                <a class="mr-2 font-medium" href="/#">@comment.User</a>@comment.Content
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const likeButtons = document.querySelectorAll('.like-button');
+    likeButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            this.classList.toggle('liked');
+            const heartIcon = this.querySelector('.heart-icon');
+            
+            if (this.classList.contains('liked')) {
+                heartIcon.style.fill = '#ec4899';
+                heartIcon.style.stroke = '#ec4899';
+
+				this.classList.add('pulsing');
+
+                setTimeout(() => {
+                    this.classList.remove('pulsing');
+                }, 3000);
+
+            } else {
+                heartIcon.style.fill = 'none';
+                heartIcon.style.stroke = 'currentColor';
+            }
+
+            heartIcon.style.animation = 'none';
+            heartIcon.offsetHeight;
+            heartIcon.style.animation = null;
+
+            // Here you would typically send an AJAX request to update the like status on the server
+            // updateLikeStatus(postId, this.classList.contains('liked'));
+        });
+    });
+
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+        const commentButtons = document.querySelectorAll('.comment-button');
+        const commentsDialog = document.getElementById('commentsDialog');
+        const closeCommentsDialog = document.getElementById('closeCommentsDialog');
+
+        commentButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const postId = this.getAttribute('data-post-id');
+                // Here you would typically fetch comments for the specific post
+                // and update the dialog content before showing it
+                commentsDialog.classList.remove('hidden');
+                commentsDialog.classList.add('flex');
+            });
+        });
+
+        closeCommentsDialog.addEventListener('click', function() {
+            commentsDialog.classList.add('hidden');
+            commentsDialog.classList.remove('flex');
+        });
+
+        commentsDialog.addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+                this.classList.remove('flex');
+            }
+        });
+    });
+</script>

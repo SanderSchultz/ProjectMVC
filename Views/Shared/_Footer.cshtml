@@ -1,0 +1,68 @@
+@* _Footer.cshtml *@
+@{
+    var groupMembers = new[]
+    {
+        new { Name = "Fabian Tangen", Github = "https://github.com/QuiecentTrip" },
+        new { Name = "Sander Schultz", Github = "https://github.com/SanderSchultz" },
+        new { Name = "Daniel Trofimovs", Github = "https://github.com/Danieltrof" },
+        // Add more members as needed
+    };
+}
+
+<footer class="mt-auto bg-gray-50 py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap justify-between">
+                <div class="mb-4 w-full md:mb-0 md:w-1/3">
+                    <h3 class="mb-2 text-lg font-semibold text-foreground">
+                        About Us
+                    </h3>
+                    <p class="text-sm text-muted-foreground">
+                        not instagram, <br /> please dont sue us
+                    </p>
+                </div>
+                <div class="mb-4 w-full md:mb-0 md:w-1/3">
+                    <h3 class="mb-2 text-lg font-semibold text-foreground">
+                        Quick Links
+                    </h3>
+                    <ul class="text-sm text-muted-foreground">
+                        <li class="mb-1">
+                            <a asp-controller="Home" asp-action="Index" class="hover:text-foreground">
+                                Home
+                            </a>
+                        </li>
+                        <li class="mb-1">
+                            <a asp-controller="Post" asp-action="Create" class="hover:text-foreground">
+                                Create Post
+                            </a>
+                        </li>
+                        <li class="mb-1">
+                            <a asp-controller="Account" asp-action="Login" class="hover:text-foreground">
+                                Login
+                            </a>
+                        </li>
+                        <li class="mb-1">
+                            <a asp-controller="Account" asp-action="Register" class="hover:text-foreground">
+                                Register
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-1/3">
+                    <h3 class="mb-2 text-lg font-semibold text-foreground">
+                        Gruppe:
+                    </h3>
+                    <div class="flex flex-col gap-2 text-sm text-muted-foreground">
+                        @foreach (var member in groupMembers)
+                        {
+                            <a href="@member.Github" target="_blank" rel="noopener noreferrer" class="hover:text-foreground">
+                                @member.Name
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-sm text-muted-foreground">
+                © @DateTime.Now.Year Social Media. All rights reserved.
+            </div>
+        </div>
+</footer>

@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="h-full light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ProjectMVC</title>
+	<link rel="stylesheet" href="~/css/output.css"/>    <!-- Other head content -->
+    <link rel="stylesheet" href="~/css/post-interactions.css" asp-append-version="true" />
+</head>
+<body class="flex flex-col min-h-full">
+    <header>
+
+		<partial name="_Navbar"/>
+
+    </header>
+
+	<main role="main" class="flex-grow">
+		@RenderBody()
+	</main>
+
+	<partial name="_Footer"/>
+
+    <!-- <script src="~/lib/jquery/dist/jquery.min.js"></script> -->
+    <!-- <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> -->
+    <!-- <script src="~/js/site.js" asp-append-version="true"></script> -->
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+<script>
+    // Theme toggle functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        if (!themeToggleButton || !themeToggleDarkIcon || !themeToggleLightIcon) {
+            console.error('Theme toggle elements not found');
+            return;
+        }
+
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                themeToggleDarkIcon.classList.remove('hidden');
+                themeToggleLightIcon.classList.add('hidden');
+            }
+            localStorage.setItem('color-theme', theme);
+        }
+
+        // Set initial theme
+        const savedTheme = localStorage.getItem('color-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+
+        // Toggle theme on button click
+        themeToggleButton.addEventListener('click', function() {
+            const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+    });
+</script>
