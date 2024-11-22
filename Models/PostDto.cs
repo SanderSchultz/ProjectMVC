@@ -8,6 +8,7 @@ namespace ProjectMVC.Models
         public int LikesCount { get; set; }
         public string User { get; set; } = string.Empty;
 		public string ProfilePicture { get; set; } = string.Empty;
+		public bool CanChangePost { get; set; }
 		public ICollection<CommentDto> Comments { get; set; } = new List<CommentDto>();
     }
 

@@ -10,13 +10,15 @@ namespace ProjectMVC.Controllers
     {
         private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly ILogger<PostController> _logger;
 
-        public PostController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<PostController> logger)
+        public PostController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<PostController> logger, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
 			_userManager = userManager;
 			_logger = logger;
+			_roleManager = roleManager;
 
         }
 
@@ -25,6 +27,11 @@ namespace ProjectMVC.Controllers
         {
 
 			ViewBag.SuccessMessage = TempData["SuccessMessage"];
+			ViewBag.MessageType = TempData["MessageType"];
+
+			var currentUser = await _userManager.GetUserAsync(User);
+			var currentUserId = currentUser?.Id;
+			var isAdmin = currentUser != null && await _userManager.IsInRoleAsync(currentUser, "Admin");
 
             var postDtos = await _context.Posts
 				.Include(p => p.User)
@@ -38,6 +45,7 @@ namespace ProjectMVC.Controllers
                     LikesCount = post.LikesCount,
                     User = post.User.Name,
 					ProfilePicture = post.User.ProfilePicture,
+					CanChangePost = isAdmin || post.User.Id == currentUserId,
 					Comments = post.Comments.Select(c => new CommentDto
 					{
 						User = c.User.Name,

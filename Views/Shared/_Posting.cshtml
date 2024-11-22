@@ -10,7 +10,7 @@
                     <div class="aspect-[4/3] overflow-hidden rounded-t-lg">
                         <img src="@post.ImageUrl" alt="Post Image" width="600" height="400" class="h-full w-full object-cover" style="aspect-ratio: 600 / 400; object-fit: cover;">
                     </div>
-                    <div class="rounded-b-lg bg-card p-4">
+                    <div class="rounded-b-lg bg-card p-4 dark:bg-white">
                         <div class="mb-4 flex items-center justify-between">
                             <div class="flex items-center gap-2">
 								@if(string.IsNullOrEmpty(post.ProfilePicture))
@@ -42,9 +42,9 @@
                                         <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
                                         <span class="sr-only">View Comments</span>
                                     </button>
-									@if(User.Identity.IsAuthenticated){
+									@if(User.Identity.IsAuthenticated && post.CanChangePost){
 									<div class="relative inline-block text-left">
-										<button class="comment-button inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9" type="button" aria-haspopup="true" aria-expanded="false" id="dropdownButton">
+										<button class="dropdown-button comment-button inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9" type="button" aria-haspopup="true" aria-expanded="false">
 											<svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 												<circle cx="3" cy="12" r="2" fill="currentColor"></circle>
 												<circle cx="12" cy="12" r="2" fill="currentColor"></circle>
@@ -54,7 +54,7 @@
 										</button>
 
 										<!-- Dropdown Menu -->
-										<div id="dropdownMenu" class="dropdown-menu absolute left-1/2 transform -translate-x-1/2 hidden mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+										<div class="dropdown-menu absolute left-1/2 transform -translate-x-1/2 hidden mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
 											<div class="py-1">
 												<a href="#" class="text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm">Edit</a>
 												<a href="#" class="text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm">Delete</a>
@@ -187,18 +187,39 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-const dropdownButton = document.getElementById('dropdownButton');
-const dropdownMenu = document.getElementById('dropdownMenu');
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdowns = document.querySelectorAll('.relative.inline-block');
 
-dropdownButton.addEventListener('click', function () {
-	// Toggle the dropdown menu visibility
-	const isVisible = dropdownMenu.classList.contains('hidden');
-	if (isVisible) {
-		dropdownMenu.classList.remove('hidden');
-		dropdownButton.setAttribute('aria-expanded', 'true');
-	} else {
-		dropdownMenu.classList.add('hidden');
-		dropdownButton.setAttribute('aria-expanded', 'false');
-	}
+    dropdowns.forEach(dropdown => {
+        const button = dropdown.querySelector('.dropdown-button');
+        const menu = dropdown.querySelector('.dropdown-menu');
+
+        button.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const isVisible = !menu.classList.contains('hidden');
+            
+            // Close all other open dropdowns
+            document.querySelectorAll('.dropdown-menu:not(.hidden)').forEach(openMenu => {
+                if (openMenu !== menu) {
+                    openMenu.classList.add('hidden');
+                    openMenu.previousElementSibling.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Toggle the clicked dropdown
+            menu.classList.toggle('hidden');
+            button.setAttribute('aria-expanded', (!isVisible).toString());
+        });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.relative.inline-block')) {
+            document.querySelectorAll('.dropdown-menu:not(.hidden)').forEach(menu => {
+                menu.classList.add('hidden');
+                menu.previousElementSibling.setAttribute('aria-expanded', 'false');
+            });
+        }
+    });
 });
 </script>

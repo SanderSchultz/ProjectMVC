@@ -38,7 +38,7 @@ namespace ProjectMVC.Controllers
             var existingUser = await _userManager.FindByEmailAsync(dto.Email);
             if (existingUser != null)
             {
-                ModelState.AddModelError("Email", "Email is already in use");
+                ModelState.AddModelError("Email", "Email already in use");
 				return View(dto);
             }
 
@@ -104,6 +104,10 @@ namespace ProjectMVC.Controllers
                 if (result.Succeeded)
                 {
 					await _signInManager.SignInAsync(user, isPersistent: false);
+
+					TempData["SuccessMessage"] = $"Welcome {user.Name}!";
+					TempData["MessageType"] = "login";
+
 					return RedirectToAction("Index", "Post");
                 }
 
@@ -112,7 +116,7 @@ namespace ProjectMVC.Controllers
             }
             catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later");
 				return View();
             }
         }
@@ -122,7 +126,8 @@ namespace ProjectMVC.Controllers
         {
             await _signInManager.SignOutAsync();
 
-			TempData["SuccessMessage"] = "You have successfully logged out.";
+			TempData["SuccessMessage"] = "You have been successfully logged out";
+			TempData["MessageType"] = "logout";
 
 			return RedirectToAction("Index", "Post");
         }

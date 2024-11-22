@@ -5,13 +5,13 @@
             <form asp-controller="Auth" asp-action="Login" method="post" class="mt-8 space-y-6">
                 <div class="flex flex-col">
                     <label for="email" class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-300">Email:</label>
-                    <input type="email" id="email" name="email" required class="rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-white dark:bg-secondary dark:text-white">
+                    <input type="email" id="email" name="email" required class="rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-white dark:bg-secondary">
                 </div>
                 <div class="flex flex-col">
                     <label for="password" class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-300">Password:</label>
-                    <input type="password" id="password" name="password" required class="rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-white dark:bg-secondary dark:text-white">
+                    <input type="password" id="password" name="password" required class="rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-white dark:bg-secondary">
                 </div>
-                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 w-full bg-gray-700 dark:bg-primary">
+                <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 w-full bg-gray-700 dark:bg-primary text-white">
                     Login
                 </button>
             </form>
@@ -24,7 +24,7 @@
 
 @if (!ViewData.ModelState.IsValid)
 {
-<div id="validation-summary" class="fixed top-4 left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 max-w-md rounded-lg bg-red-500 p-4 text-center text-white shadow-lg transition-all duration-500 ease-out font-bold">
+<div id="validation-summary" class="fixed top-4 left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 max-w-md rounded-lg bg-red-500 p-4 text-center text-white shadow-lg transition-all duration-500 ease-out font-bold whitespace-nowrap">
         @Html.ValidationSummary(false)
 </div>
 }
@@ -46,7 +46,7 @@
 				validationSummary.classList.add('opacity-0', '-translate-y-full');
 
 				setTimeout(() => validationSummary.remove(), 500); // Remove after fade-out
-			}, 3000);
+			}, 4000);
 		}
     });
 </script>
