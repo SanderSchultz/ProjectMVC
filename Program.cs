@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProjectMVC.Data;
 using ProjectMVC.Models;
+using ProjectMVC.Services;
+using ProjectMVC.Repositories;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,26 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 		.AddDefaultTokenProviders();
 
 builder.Services.AddRazorPages();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CanEditPost", policy =>
+        policy.RequireAssertion(context =>
+        {
+            var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (context.Resource is Post post)
+            {
+                return context.User.IsInRole("Admin") || post.UserId == userId;
+            }
+            // If context.Resource is not set, allow the action and let the service handle authorization
+            return true;
+        }));
+});
+
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 var app = builder.Build();
 

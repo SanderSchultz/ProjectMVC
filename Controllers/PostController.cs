@@ -1,179 +1,97 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using ProjectMVC.Data;
 using ProjectMVC.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
-namespace ProjectMVC.Controllers
+public class PostController : Controller
 {
-    public class PostController : Controller
+    private readonly IPostService _postService;
+    private readonly ILogger<PostController> _logger;
+
+    public PostController(IPostService postService, ILogger<PostController> logger)
     {
-        private readonly ApplicationDbContext _context;
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly RoleManager<IdentityRole> _roleManager;
-		private readonly ILogger<PostController> _logger;
-
-        public PostController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<PostController> logger, RoleManager<IdentityRole> roleManager)
-        {
-            _context = context;
-			_userManager = userManager;
-			_logger = logger;
-			_roleManager = roleManager;
-
-        }
-
-        // GET: Post
-        public async Task<IActionResult> Index()
-        {
-
-			ViewBag.SuccessMessage = TempData["SuccessMessage"];
-			ViewBag.MessageType = TempData["MessageType"];
-
-			var currentUser = await _userManager.GetUserAsync(User);
-			var currentUserId = currentUser?.Id;
-			var isAdmin = currentUser != null && await _userManager.IsInRoleAsync(currentUser, "Admin");
-
-            var postDtos = await _context.Posts
-				.Include(p => p.User)
-				.Include(p => p.Comments)
-				.ThenInclude(c => c.User)
-                .Select(post => new PostDto
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    ImageUrl = post.ImageUrl,
-                    LikesCount = post.LikesCount,
-                    User = post.User.Name,
-					ProfilePicture = post.User.ProfilePicture,
-					CanChangePost = isAdmin || post.User.Id == currentUserId,
-					Comments = post.Comments.Select(c => new CommentDto
-					{
-						User = c.User.Name,
-						ProfilePicture = c.User.ProfilePicture,
-						Content = c.Content
-					}).ToList()
-                })
-				.ToListAsync();
-
-			if(postDtos == null){
-				_logger.LogInformation("No posts");
-			} else {
-				_logger.LogInformation($"Fetched {postDtos.Count}");
-			}
-
-            return View(postDtos);
-        }
-
-        // GET: Post/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Post/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PostCreateDto dto)
-        {
-			var user = await _userManager.GetUserAsync(User);
-
-			if(user == null){
-				return RedirectToAction("Login", "Account");
-			}
-
-            if (ModelState.IsValid)
-            {
-                var newPost = new Post
-                {
-                    Title = dto.Title,
-                    ImageUrl = dto.ImageUrl,
-                    User = user,
-                    Created = DateTime.UtcNow
-                };
-
-                _context.Posts.Add(newPost);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(dto);
-        }
-
-        // GET: Post/Edit/{id}
-        public async Task<IActionResult> Edit(int id)
-        {
-            var post = await _context.Posts
-				.Include(p => p.User)
-				.FirstOrDefaultAsync(p => p.Id == id);
-
-            if (post == null)
-                return NotFound();
-
-			var user = await _userManager.GetUserAsync(User);
-
-			if(user == null || post.User.Id != user.Id){
-				return Unauthorized();
-			}
-
-            var updateDto = new PostUpdateDto
-            {
-                Title = post.Title,
-                ImageUrl = post.ImageUrl
-            };
-
-            return View(updateDto);
-        }
-
-        // POST: Post/Edit/{id}
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, PostUpdateDto dto)
-        {
-            var post = await _context.Posts
-				.Include(p => p.User)
-				.FirstOrDefaultAsync(p => p.Id == id);
-
-            if (post == null)
-                return NotFound();
-
-			var user = await _userManager.GetUserAsync(User);
-
-			if(user == null || post.User.Id != user.Id){
-				return Unauthorized();
-			}
-
-            if (ModelState.IsValid)
-            {
-                post.Title = dto.Title;
-                post.ImageUrl = dto.ImageUrl;
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(dto);
-        }
-
-        // POST: Post/Delete/{id}
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var post = await _context.Posts
-				.Include(p => p.User)
-				.FirstOrDefaultAsync(p => p.Id == id);
-
-            if (post == null)
-                return NotFound();
-
-			var user = await _userManager.GetUserAsync(User);
-
-			if(user == null || post.User.Id != user.Id){
-				return Unauthorized();
-			}
-
-            _context.Posts.Remove(post);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        _postService = postService;
+        _logger = logger;
     }
+
+	[AllowAnonymous]
+    public async Task<IActionResult> Index()
+    {
+        ViewBag.SuccessMessage = TempData["SuccessMessage"];
+        ViewBag.MessageType = TempData["MessageType"];
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var isAdmin = User.IsInRole("Admin");
+
+        var posts = await _postService.GetAllPostsAsync(userId, isAdmin);
+
+        _logger.LogInformation($"Fetched {posts.Count} posts");
+
+        return View(posts);
+    }
+
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(PostCreateDto dto)
+    {
+        if (!ModelState.IsValid)
+            return View(dto);
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        await _postService.CreatePostAsync(dto, userId);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [Authorize(Policy = "CanEditPost")]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var post = await _postService.GetPostForEditAsync(id, userId);
+
+        if (post == null)
+            return NotFound();
+
+        return View(post);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = "CanEditPost")]
+    public async Task<IActionResult> Edit(int id, PostUpdateDto dto)
+    {
+        if (!ModelState.IsValid)
+            return View(dto);
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        await _postService.UpdatePostAsync(id, dto, userId);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	[Authorize(Policy = "CanEditPost")]
+	public async Task<IActionResult> Delete(int id)
+	{
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		try
+		{
+			await _postService.DeletePostAsync(id, userId);
+			return RedirectToAction(nameof(Index));
+		}
+		catch (UnauthorizedAccessException)
+		{
+			return Forbid();
+		}
+		catch (ArgumentException)
+		{
+			return NotFound();
+		}
+	}
 }
