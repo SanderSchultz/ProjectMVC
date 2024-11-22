@@ -6,16 +6,22 @@
         @foreach (var post in Model)
         {
             <div class="mt-16">
-                <div class="mx-auto w-full max-w-[80%] rounded-xl outline outline-1 outline-gray-300 lg:max-w-[60%] 2xl:max-w-[40%]">
+                <div class="mx-auto w-full max-w-[90%] rounded-xl outline outline-1 outline-gray-300 lg:max-w-[60%] 2xl:max-w-[50%]">
                     <div class="aspect-[4/3] overflow-hidden rounded-t-lg">
                         <img src="@post.ImageUrl" alt="Post Image" width="600" height="400" class="h-full w-full object-cover" style="aspect-ratio: 600 / 400; object-fit: cover;">
                     </div>
                     <div class="rounded-b-lg bg-card p-4">
                         <div class="mb-4 flex items-center justify-between">
                             <div class="flex items-center gap-2">
+								@if(string.IsNullOrEmpty(post.ProfilePicture))
+								{
 									<span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
 										<span class="flex h-full w-full items-center justify-center rounded-full bg-muted">@post.User.Substring(0, 2).ToUpper()</span>
 									</span>
+
+								} else {
+									<img src="@post.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full" />
+								}
                                 <div>
                                     <div class="font-medium">@post.User</div>
                                     <div class="text-sm text-muted-foreground">@DateTime.UtcNow.ToString("M/d/yyyy, h:mm:ss tt")</div>
@@ -36,12 +42,33 @@
                                         <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
                                         <span class="sr-only">View Comments</span>
                                     </button>
+									@if(User.Identity.IsAuthenticated){
+									<div class="relative inline-block text-left">
+										<button class="comment-button inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9" type="button" aria-haspopup="true" aria-expanded="false" id="dropdownButton">
+											<svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+												<circle cx="3" cy="12" r="2" fill="currentColor"></circle>
+												<circle cx="12" cy="12" r="2" fill="currentColor"></circle>
+												<circle cx="21" cy="12" r="2" fill="currentColor"></circle>
+											</svg>
+											<span class="sr-only">Options</span>
+										</button>
+
+										<!-- Dropdown Menu -->
+										<div id="dropdownMenu" class="dropdown-menu absolute left-1/2 transform -translate-x-1/2 hidden mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+											<div class="py-1">
+												<a href="#" class="text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm">Edit</a>
+												<a href="#" class="text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm">Delete</a>
+											</div>
+										</div>
+									</div>
+									}
                                 </div>
                                 <div class="text-sm font-medium">
                                     <span class="text-primary">@post.LikesCount</span> likes
                                 </div>
                             </div>
                         </div>
+						<div class="border-t border-gray-300 my-4"></div>
                         <div class="mt-4 space-y-2">
                             @if (post.Comments == null || post.Comments.Count == 0)
                             {
@@ -53,9 +80,15 @@
                                 {
                                     <div class="z-20 flex items-center justify-between gap-2">
                                         <div class="flex items-center gap-2">
-                                            <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                                                <span class="flex h-full w-full items-center justify-center rounded-full bg-muted">@comment.User.Substring(0, 2).ToUpper()</span>
-                                            </span>
+											@if(string.IsNullOrEmpty(comment.ProfilePicture))
+											{
+											<span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+												<span class="flex h-full w-full items-center justify-center rounded-full bg-muted">@comment.User.Substring(0, 2).ToUpper()</span>
+											</span>
+
+											} else {
+												<img src="@comment.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full" />
+											}
                                             <div>
                                                 <a class="mr-2 font-medium" href="/#">@comment.User</a>@comment.Content
                                             </div>
@@ -64,12 +97,31 @@
                                 }
                             }
                         </div>
+						@if(User.Identity.IsAuthenticated){
+						<div class="flex items-center space-x-2 mt-6 ">
+							<input 
+								type="text" 
+								placeholder="Write your comment..." 
+								class="flex-grow rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+							/>
+							<button 
+								class="rounded-lg bg-blue-500 dark:bg-gray-800 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+							>
+								Post
+							</button>
+						</div>
+						} else {
+						<div class="flex items-center space-x-2 mt-6 ">
+							<div class="text-gray-500 text-sm">Please login to comment</div>
+						</div>
+						}
                     </div>
                 </div>
             </div>
         }
     </div>
 </div>
+
 <script>
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -98,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
             heartIcon.style.animation = 'none';
             heartIcon.offsetHeight;
             heartIcon.style.animation = null;
+
 
             // Here you would typically send an AJAX request to update the like status on the server
             // updateLikeStatus(postId, this.classList.contains('liked'));
@@ -133,4 +186,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+const dropdownButton = document.getElementById('dropdownButton');
+const dropdownMenu = document.getElementById('dropdownMenu');
+
+dropdownButton.addEventListener('click', function () {
+	// Toggle the dropdown menu visibility
+	const isVisible = dropdownMenu.classList.contains('hidden');
+	if (isVisible) {
+		dropdownMenu.classList.remove('hidden');
+		dropdownButton.setAttribute('aria-expanded', 'true');
+	} else {
+		dropdownMenu.classList.add('hidden');
+		dropdownButton.setAttribute('aria-expanded', 'false');
+	}
+});
 </script>

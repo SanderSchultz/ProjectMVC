@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using ProjectMVC.Models;
 
 namespace ProjectMVC.Data
@@ -20,18 +21,30 @@ namespace ProjectMVC.Data
 
 			var adminUser = new ApplicationUser { 
 				Id= "1", 
+				Email = "admin@admin.com",
 				UserName = "admin@admin.com",
+				NormalizedEmail = "ADMIN@ADMIN.COM",
+				NormalizedUserName = "ADMIN@ADMIN.COM",
 				Name = "Admin", 
-				// ProfilePicture = "/images/admin.png"
+				ProfilePicture = "/images/admin.png",
+				SecurityStamp = Guid.NewGuid().ToString()
 			};
 
 			var janeUser = new ApplicationUser 
 			{
 				Id = "2", 
-				UserName = "jane@jane.com", 
+				Email = "jane@jane.com",
+				UserName = "jane@jane.com",
+				NormalizedEmail = "JANE@JANE.COM",
+				NormalizedUserName = "JANE@JANE.COM",
 				Name = "Jane",
-				// ProfilePicture = "/images/admin.png"
+				ProfilePicture = "/images/jane.jpeg",
+				SecurityStamp = Guid.NewGuid().ToString()
 			};
+
+			var hasher = new PasswordHasher<ApplicationUser>();
+			adminUser.PasswordHash = hasher.HashPassword(adminUser, "admin");
+			janeUser.PasswordHash = hasher.HashPassword(janeUser, "jane");
 
 			modelBuilder.Entity<ApplicationUser>().HasData(adminUser, janeUser);
 
@@ -62,7 +75,7 @@ namespace ProjectMVC.Data
                 new Comment
                 {
                     Id = 1,
-                    Content = "This is a comment on the first post.",
+                    Content = "Nice post, looking forward to more!",
                     PostId = 1,
                     Created = DateTime.UtcNow,
                     UserId = janeUser.Id
@@ -70,10 +83,10 @@ namespace ProjectMVC.Data
                 new Comment
                 {
                     Id = 2,
-                    Content = "Nice post, looking forward to more!",
+                    Content = "Thank you!",
                     PostId = 1,
                     Created = DateTime.UtcNow,
-                    UserId = janeUser.Id
+                    UserId = adminUser.Id
                 }
             );
 		}

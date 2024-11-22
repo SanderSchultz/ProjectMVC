@@ -6,5 +6,6 @@ namespace ProjectMVC.Models
         public string Content { get; set; } = string.Empty;
         public DateTime Created { get; set; }
         public string User { get; set; } = string.Empty;
+		public string ProfilePicture { get; set; } = string.Empty;
     }
 }

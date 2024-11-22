@@ -9,21 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
 builder.Services.AddControllersWithViews();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => 
+		{
+		options.User.RequireUniqueEmail = true;
+		})
+		.AddEntityFrameworkStores<ApplicationDbContext>()
+		.AddDefaultTokenProviders();
 
-builder.Services.AddLogging(options =>
-{
-    options.AddConsole();  // Ensure logging to console is enabled
-	options.SetMinimumLevel(LogLevel.Trace);
-	
-});
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -45,6 +40,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Post}/{action=Index}/{id?}");
-app.MapRazorPages();
 
 app.Run();

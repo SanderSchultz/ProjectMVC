@@ -23,19 +23,25 @@ namespace ProjectMVC.Controllers
         // GET: Post
         public async Task<IActionResult> Index()
         {
+
+			ViewBag.SuccessMessage = TempData["SuccessMessage"];
+
             var postDtos = await _context.Posts
 				.Include(p => p.User)
 				.Include(p => p.Comments)
+				.ThenInclude(c => c.User)
                 .Select(post => new PostDto
                 {
                     Id = post.Id,
                     Title = post.Title,
                     ImageUrl = post.ImageUrl,
                     LikesCount = post.LikesCount,
-                    User = _context.Users.FirstOrDefault(u => u.Id == post.UserId)!.Name,
+                    User = post.User.Name,
+					ProfilePicture = post.User.ProfilePicture,
 					Comments = post.Comments.Select(c => new CommentDto
 					{
-						User = _context.Users.FirstOrDefault(u => u.Id == c.UserId)!.Name,
+						User = c.User.Name,
+						ProfilePicture = c.User.ProfilePicture,
 						Content = c.Content
 					}).ToList()
                 })
