@@ -8,7 +8,7 @@
             <div class="mt-16">
                 <div class="mx-auto w-full max-w-[90%] rounded-xl outline outline-1 outline-gray-300 lg:max-w-[60%] 2xl:max-w-[50%]">
                     <div class="aspect-[4/3] overflow-hidden rounded-t-lg">
-                        <img src="@post.ImageUrl" alt="Post Image" width="600" height="400" class="h-full w-full object-cover" style="aspect-ratio: 600 / 400; object-fit: cover;">
+                        <img src="@post.ImageFile" alt="Post Image" width="600" height="400" class="h-full w-full object-cover" style="aspect-ratio: 600 / 400; object-fit: cover;">
                     </div>
                     <div class="rounded-b-lg bg-card p-4 dark:bg-white">
                         <div class="mb-4 flex items-center justify-between">
@@ -79,7 +79,7 @@
                             }
                             else
                             {
-                                @foreach (var comment in post.Comments)
+                                @foreach (var comment in post.Comments.Take(5))
                                 {
                                     <div class="z-20 flex items-center justify-between gap-2">
                                         <div class="flex items-center gap-2">
@@ -106,6 +106,12 @@
                                         }
                                     </div>
                                 }
+								@if(post.Comments.Count() > 5)
+								{
+									<div class="flex items-center space-x-2 mt-6">
+										<div class="text-gray-500 text-sm"><a href="@Url.Action("Login", "Auth")" class="text-blue-500 hover:underline">See all comments</a></div>
+									</div>
+								}
                             }
                         </div>
                         @if(User.Identity.IsAuthenticated)
@@ -121,7 +127,7 @@
                                 />
                                 <button 
                                     type="submit"
-                                    class="rounded-lg bg-blue-500 dark:bg-gray-800 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    class="rounded-lg dark:bg-gray-700 bg-gray-700 px-4 py-2 text-white hover:bg-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     Post
                                 </button>

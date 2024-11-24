@@ -54,7 +54,7 @@ namespace ProjectMVC.Data
                 {
                     Id = 1,
                     Title = "First Post",
-                    ImageUrl = "/images/sunset.webp",
+                    ImageFile = "/images/sunset.webp",
                     Created = DateTime.UtcNow,
                     LikesCount = 0,
                     UserId = adminUser.Id
@@ -63,7 +63,7 @@ namespace ProjectMVC.Data
                 {
                     Id = 2,
                     Title = "Second Post",
-                    ImageUrl = "/images/cat.webp",
+                    ImageFile = "/images/cat.webp",
                     Created = DateTime.UtcNow,
                     LikesCount = 0,
                     UserId = janeUser.Id

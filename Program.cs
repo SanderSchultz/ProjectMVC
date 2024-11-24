@@ -23,6 +23,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddRazorPages();
 
+//Implements role for who can edit posts, admins or owner of post
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CanEditPost", policy =>

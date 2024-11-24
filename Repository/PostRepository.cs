@@ -20,16 +20,19 @@ namespace ProjectMVC.Repositories
                 .Include(p => p.User)
                 .Include(p => p.Comments)
                 .ThenInclude(c => c.User)
+				.OrderByDescending(post => post.Created)
                 .Select(post => new PostDto
                 {
                     Id = post.Id,
                     Title = post.Title,
-                    ImageUrl = post.ImageUrl,
+                    ImageFile = post.ImageFile,
                     LikesCount = post.LikesCount,
                     User = post.User.Name,
                     ProfilePicture = post.User.ProfilePicture,
                     CanChangePost = isAdmin || post.User.Id == currentUserId,
-                    Comments = post.Comments.Select(c => new CommentDto
+                    Comments = post.Comments
+					.OrderByDescending(c => c.Created)
+					.Select(c => new CommentDto
                     {
                         User = c.User.Name,
                         ProfilePicture = c.User.ProfilePicture,

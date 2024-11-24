@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="~/css/post-interactions.css" asp-append-version="true" />
 </head>
 <body class="flex flex-col min-h-full dark:bg-gray-800">
-    <header>
+    <header class="fixed top-0 left-0 w-full z-10 shadow-lg dark:shadow-white dark:shadow-sm">
 
 		<partial name="_Navbar"/>
 
     </header>
 
-	<main role="main" class="flex-grow">
+	<main role="main" class="flex-grow mt-16">
 		@RenderBody()
 	</main>
 

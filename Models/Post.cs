@@ -7,8 +7,8 @@ namespace ProjectMVC.Models
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
-        public DateTime Created { get; set; } = DateTime.UtcNow;
+        public string ImageFile { get; set; } = string.Empty;
+        public DateTime Created { get; set; }
         public int LikesCount { get; set; } = 0;
 		public string UserId { get; set; } = string.Empty;
         public ApplicationUser User { get; set; } = null!;

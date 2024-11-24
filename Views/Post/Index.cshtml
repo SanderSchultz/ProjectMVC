@@ -3,11 +3,11 @@
 }
 
 <div class="container mx-auto">
-    <h1 class="text-3xl font-bold mb-6 text-center mt-16 dark:text-white">Recent Posts</h1>
+    <h1 class="text-3xl font-bold mb-6 text-center mt-[6rem] dark:text-white">Recent Posts</h1>
 	@if (ViewBag.SuccessMessage != null)
 	{
 		<div id="validation-summary" 
-			 class="fixed top-4 left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg p-4 text-center shadow-lg transition-all duration-500 ease-out font-bold @(TempData["MessageType"] as string == "login" ? "bg-gray-100 text-black" : "bg-green-500 text-white")">
+			 class="fixed top-2 left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg p-4 text-center shadow-lg transition-all duration-500 ease-out font-bold @(TempData["MessageType"] as string == "login" ? "bg-gray-100 text-black" : "bg-green-500 text-white")">
 			@ViewBag.SuccessMessage
 		</div>
 	}
@@ -16,24 +16,26 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const validationSummary = document.getElementById('validation-summary');
 
-		if (validationSummary) {
-			// Trigger fade-in and slide-down into position
-			setTimeout(() => {
-				validationSummary.classList.remove('opacity-0', '-translate-y-full');
-				validationSummary.classList.add('opacity-100', 'translate-y-0');
-			}, 50); // Slight delay for smoother start
+document.addEventListener('DOMContentLoaded', () => {
+	const validationSummary = document.getElementById('validation-summary');
 
-			// Stay visible, then fade out and slide further down
-			setTimeout(() => {
-				validationSummary.classList.remove('opacity-100', 'translate-y-0');
-				validationSummary.classList.add('opacity-0', '-translate-y-full');
+	if (validationSummary) {
+		// Trigger fade-in and slide-down into position
+		setTimeout(() => {
+			validationSummary.classList.remove('opacity-0', '-translate-y-full');
+			validationSummary.classList.add('opacity-100', 'translate-y-0');
+		}, 50); // Slight delay for smoother start
 
-				setTimeout(() => validationSummary.remove(), 500); // Remove after fade-out
-			}, 2500);
-		}
-    });
+		// Stay visible, then fade out and slide further down
+		setTimeout(() => {
+			validationSummary.classList.remove('opacity-100', 'translate-y-0');
+			validationSummary.classList.add('opacity-0', '-translate-y-full');
+
+			setTimeout(() => validationSummary.remove(), 500); // Remove after fade-out
+		}, 3000);
+	}
+});
+
 </script>
 

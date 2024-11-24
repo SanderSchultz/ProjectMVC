@@ -64,6 +64,10 @@ namespace ProjectMVC.Controllers
 				await _userManager.AddClaimAsync(user, claim);
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
+
+				TempData["SuccessMessage"] = $"Welcome {user.Name}!";
+				TempData["MessageType"] = "login";
+
 				return RedirectToAction("Index", "Post");
             }
 

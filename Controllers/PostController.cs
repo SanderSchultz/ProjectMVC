@@ -3,6 +3,7 @@ using ProjectMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
+[Authorize]
 public class PostController : Controller
 {
     private readonly IPostService _postService;
@@ -30,10 +31,10 @@ public class PostController : Controller
         return View(posts);
     }
 
-    public IActionResult Create()
-    {
-        return View();
-    }
+    // public IActionResult Create()
+    // {
+    //     return View();
+    // }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -48,17 +49,17 @@ public class PostController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize(Policy = "CanEditPost")]
-    public async Task<IActionResult> Edit(int id)
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var post = await _postService.GetPostForEditAsync(id, userId);
-
-        if (post == null)
-            return NotFound();
-
-        return View(post);
-    }
+    // [Authorize(Policy = "CanEditPost")]
+    // public async Task<IActionResult> Edit(int id)
+    // {
+    //     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    //     var post = await _postService.GetPostForEditAsync(id, userId);
+    //
+    //     if (post == null)
+    //         return NotFound();
+    //
+    //     return View(post);
+    // }
 
     [HttpPost]
     [ValidateAntiForgeryToken]

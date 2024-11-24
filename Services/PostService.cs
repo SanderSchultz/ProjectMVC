@@ -18,25 +18,46 @@ namespace ProjectMVC.Services
             return await _postRepository.GetAllPostsAsync(currentUserId, isAdmin);
         }
 
-        public async Task<PostUpdateDto> GetPostForEditAsync(int id, string userId)
-        {
-            var post = await _postRepository.GetPostByIdAsync(id);
-            if (post == null || post.User.Id != userId)
-                return null;
-
-            return new PostUpdateDto
-            {
-                Title = post.Title,
-                ImageUrl = post.ImageUrl
-            };
-        }
+        // public async Task<PostUpdateDto> GetPostForEditAsync(int id, string userId)
+        // {
+        //     var post = await _postRepository.GetPostByIdAsync(id);
+        //     if (post == null || post.User.Id != userId)
+        //         return null;
+        //
+        //     return new PostUpdateDto
+        //     {
+        //         Title = post.Title,
+        //         // ImageFile = post.ImageFile
+        //     };
+        // }
 
         public async Task CreatePostAsync(PostCreateDto dto, string userId)
         {
+			string imagePath = string.Empty;
+
+			// Handle file saving
+			if (dto.ImageFile != null && dto.ImageFile.Length > 0)
+			{
+				// Generate unique filename
+				var fileName = Guid.NewGuid() + Path.GetExtension(dto.ImageFile.FileName);
+
+				// File path in wwwroot
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+				// Save the file
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					await dto.ImageFile.CopyToAsync(stream);
+				}
+
+				// Relative path to save in database
+				imagePath = $"/images/{fileName}";
+			}
+
             var newPost = new Post
             {
                 Title = dto.Title,
-                ImageUrl = dto.ImageUrl,
+                ImageFile = imagePath,
                 UserId = userId,
                 Created = DateTime.UtcNow
             };
@@ -51,7 +72,7 @@ namespace ProjectMVC.Services
                 throw new UnauthorizedAccessException("You are not authorized to edit this post.");
 
             post.Title = dto.Title;
-            post.ImageUrl = dto.ImageUrl;
+            // post.ImageFile = dto.ImageFile;
 
             await _postRepository.UpdatePostAsync(post);
         }
