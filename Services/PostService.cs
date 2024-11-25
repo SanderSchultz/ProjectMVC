@@ -18,19 +18,6 @@ namespace ProjectMVC.Services
             return await _postRepository.GetAllPostsAsync(currentUserId, isAdmin);
         }
 
-        // public async Task<PostUpdateDto> GetPostForEditAsync(int id, string userId)
-        // {
-        //     var post = await _postRepository.GetPostByIdAsync(id);
-        //     if (post == null || post.User.Id != userId)
-        //         return null;
-        //
-        //     return new PostUpdateDto
-        //     {
-        //         Title = post.Title,
-        //         // ImageFile = post.ImageFile
-        //     };
-        // }
-
         public async Task CreatePostAsync(PostCreateDto dto, string userId)
         {
 			string imagePath = string.Empty;
@@ -68,7 +55,7 @@ namespace ProjectMVC.Services
         public async Task UpdatePostAsync(int id, PostUpdateDto dto, string userId)
         {
             var post = await _postRepository.GetPostByIdAsync(id);
-            if (post == null || post.User.Id != userId)
+            if (post == null || post.UserId != userId)
                 throw new UnauthorizedAccessException("You are not authorized to edit this post.");
 
             post.Title = dto.Title;

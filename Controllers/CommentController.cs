@@ -1,65 +1,45 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using ProjectMVC.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using ProjectMVC.Services;
 
-namespace ProjectMVC.Controllers
+[Authorize]
+public class CommentController : Controller
 {
-    public class CommentController : Controller
-    {
-        private readonly ICommentService _commentService;
-        private readonly UserManager<ApplicationUser> _userManager;
+	private readonly ICommentService _commentService;
 
-        public CommentController(ICommentService commentService, UserManager<ApplicationUser> userManager)
-        {
-            _commentService = commentService;
-            _userManager = userManager;
-        }
+	public CommentController(ICommentService commentService)
+	{
+		_commentService = commentService;
+	}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int postId, string content)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> Create(int postId, string content)
+	{
 
-            try
-            {
-                await _commentService.CreateCommentAsync(postId, content, user.Id);
-                return RedirectToAction("Index", "Post");
-            }
-            catch (ArgumentException)
-            {
-                return NotFound();
-            }
-        }
+		if(string.IsNullOrWhiteSpace(content))
+		{
+			ModelState.AddModelError(string.Empty, "Content cannot be empty");
+			return RedirectToAction("Index", "Post");
+		}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		await _commentService.CreateCommentAsync(postId, content, userId);
 
-            try
-            {
-                await _commentService.DeleteCommentAsync(id, user.Id);
-                return RedirectToAction("Index", "Post");
-            }
-            catch (ArgumentException)
-            {
-                return NotFound();
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return Forbid();
-            }
-        }
-    }
+		return RedirectToAction("Index", "Post");
+
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> Delete(int id)
+	{
+		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+		await _commentService.DeleteCommentAsync(id, userId);
+
+		ModelState.AddModelError(string.Empty, "nope");
+		return View();
+	}
 }

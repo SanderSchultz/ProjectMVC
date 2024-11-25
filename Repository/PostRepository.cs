@@ -36,7 +36,8 @@ namespace ProjectMVC.Repositories
                     {
                         User = c.User.Name,
                         ProfilePicture = c.User.ProfilePicture,
-                        Content = c.Content
+                        Content = c.Content,
+						CanEdit = c.User.Id == currentUserId
                     }).ToList()
                 })
                 .ToListAsync();

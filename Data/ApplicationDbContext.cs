@@ -78,7 +78,8 @@ namespace ProjectMVC.Data
                     Content = "Nice post, looking forward to more!",
                     PostId = 1,
                     Created = DateTime.UtcNow,
-                    UserId = janeUser.Id
+                    UserId = janeUser.Id,
+
                 },
                 new Comment
                 {

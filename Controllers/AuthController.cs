@@ -19,12 +19,18 @@ namespace ProjectMVC.Controllers
 
 		public IActionResult Login()
 		{
-			return View();
+			var model = new LoginDto
+			{
+				Email = "",
+				Password = ""
+			};
+
+			return View(model);
 		}
 
 		public IActionResult Register()
 		{
-			return View();
+			return View(new UserDto());
 		}
 
         [HttpPost]
@@ -92,8 +98,8 @@ namespace ProjectMVC.Controllers
                 var user = await _userManager.FindByEmailAsync(dto.Email);
                 if (user == null || user.UserName == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid email or password");
-					return View();
+                    ModelState.AddModelError(string.Empty, "Wrong email or password");
+					return View(dto);
                 }
 
 				var userClaims = await _userManager.GetClaimsAsync(user);

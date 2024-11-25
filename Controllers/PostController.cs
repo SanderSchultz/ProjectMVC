@@ -7,12 +7,10 @@ using System.Security.Claims;
 public class PostController : Controller
 {
     private readonly IPostService _postService;
-    private readonly ILogger<PostController> _logger;
 
-    public PostController(IPostService postService, ILogger<PostController> logger)
+    public PostController(IPostService postService)
     {
         _postService = postService;
-        _logger = logger;
     }
 
 	[AllowAnonymous]
@@ -26,15 +24,8 @@ public class PostController : Controller
 
         var posts = await _postService.GetAllPostsAsync(userId, isAdmin);
 
-        _logger.LogInformation($"Fetched {posts.Count} posts");
-
         return View(posts);
     }
-
-    // public IActionResult Create()
-    // {
-    //     return View();
-    // }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -48,18 +39,6 @@ public class PostController : Controller
 
         return RedirectToAction(nameof(Index));
     }
-
-    // [Authorize(Policy = "CanEditPost")]
-    // public async Task<IActionResult> Edit(int id)
-    // {
-    //     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    //     var post = await _postService.GetPostForEditAsync(id, userId);
-    //
-    //     if (post == null)
-    //         return NotFound();
-    //
-    //     return View(post);
-    // }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
