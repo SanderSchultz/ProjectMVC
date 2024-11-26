@@ -43,7 +43,7 @@
                                         <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
                                         <span class="sr-only">View Comments</span>
                                     </button>
-                                    @if(User.Identity.IsAuthenticated && post.CanChangePost)
+                                    @if(User.Identity.IsAuthenticated)
                                     {
                                         <div class="relative inline-block text-left">
                                             <button class="dropdown-button comment-button inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9" type="button" aria-haspopup="true" aria-expanded="false">
@@ -123,7 +123,7 @@
 								}
                             }
                         </div>
-                        @if(User.Identity.IsAuthenticated)
+                        @if(User.Identity.IsAuthenticated && post.CanChangePost)
                         {
                             <form asp-controller="Comment" asp-action="Create" method="post" class="flex items-center space-x-2 mt-6">
                                 <input type="hidden" name="postId" value="@post.Id" />
@@ -154,6 +154,13 @@
         }
     </div>
 </div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+<div id="validation-summary" class="fixed top-[0.4rem] left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg bg-red-500 p-4 text-center text-white shadow-lg transition-all duration-500 ease-out font-bold whitespace-nowrap">
+        @Html.ValidationSummary(false)
+</div>
+}
 
 <!-- Dims background when creating post! -->
 <div id="overlay-edit" class="hidden fixed inset-0 bg-black bg-opacity-50"></div>

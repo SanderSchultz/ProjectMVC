@@ -7,7 +7,7 @@
 	@if (ViewBag.SuccessMessage != null)
 	{
 		<div id="validation-summary" 
-			 class="fixed top-2 left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg p-4 text-center shadow-lg transition-all duration-500 ease-out font-bold @(TempData["MessageType"] as string == "login" ? "bg-gray-100 text-black" : "bg-green-500 text-white")">
+			 class="fixed top-[0.4rem] left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg p-4 text-center shadow-lg transition-all duration-500 ease-out font-bold @(TempData["MessageType"] as string == "login" ? "bg-gray-100 text-black" : "bg-green-500 text-white")">
 			@ViewBag.SuccessMessage
 		</div>
 	}
@@ -15,27 +15,36 @@
 
 </div>
 
+
 <script>
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual'; // Prevent browser from restoring scroll position
+    }
 
-document.addEventListener('DOMContentLoaded', () => {
-	const validationSummary = document.getElementById('validation-summary');
+    window.addEventListener("beforeunload", function () {
+        localStorage.setItem("scrollPosition", window.scrollY);
+    });
 
-	if (validationSummary) {
-		// Trigger fade-in and slide-down into position
-		setTimeout(() => {
-			validationSummary.classList.remove('opacity-0', '-translate-y-full');
-			validationSummary.classList.add('opacity-100', 'translate-y-0');
-		}, 50); // Slight delay for smoother start
+    document.addEventListener("DOMContentLoaded", () => {
+        const scrollPosition = localStorage.getItem("scrollPosition");
+        if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition, 10));
+            localStorage.removeItem("scrollPosition");
+        }
 
-		// Stay visible, then fade out and slide further down
-		setTimeout(() => {
-			validationSummary.classList.remove('opacity-100', 'translate-y-0');
-			validationSummary.classList.add('opacity-0', '-translate-y-full');
+        // Validation summary animation logic
+        const validationSummary = document.getElementById('validation-summary');
+        if (validationSummary) {
+            setTimeout(() => {
+                validationSummary.classList.remove('opacity-0', '-translate-y-full');
+                validationSummary.classList.add('opacity-100', 'translate-y-0');
+            }, 50);
 
-			setTimeout(() => validationSummary.remove(), 500); // Remove after fade-out
-		}, 3000);
-	}
-});
-
+            setTimeout(() => {
+                validationSummary.classList.remove('opacity-100', 'translate-y-0');
+                validationSummary.classList.add('opacity-0', '-translate-y-full');
+                setTimeout(() => validationSummary.remove(), 500);
+            }, 3000);
+        }
+    });
 </script>
-
