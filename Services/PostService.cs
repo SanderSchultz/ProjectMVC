@@ -26,6 +26,7 @@ namespace ProjectMVC.Services
 				Title = post.Title,
 				ImageFile = post.ImageFile,
 				LikesCount = post.LikesCount,
+				Created = post.Created,
 				User = post.User.Name,
 				ProfilePicture = post.User.ProfilePicture,
 				CanChangePost = isAdmin || post.User.Id == currentUserId,
@@ -33,6 +34,7 @@ namespace ProjectMVC.Services
 					.OrderByDescending(c => c.Created)
 					.Select(c => new CommentDto
 					{
+						Id = c.Id,
 						User = c.User.Name,
 						ProfilePicture = c.User.ProfilePicture,
 						Content = c.Content,
@@ -98,6 +100,21 @@ namespace ProjectMVC.Services
 			{
 				return Result.Failure("You are not authorized to delete this post");
 			}
+
+			if (!string.IsNullOrEmpty(post.ImageFile))
+			{
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", post.ImageFile.TrimStart('/'));
+				if (File.Exists(filePath))
+				{
+					File.Delete(filePath);
+					Console.WriteLine($"Deleted image: {filePath}");
+				}
+				else
+				{
+					Console.WriteLine($"Image not found: {filePath}");
+				}
+			}
+
 
 			await _postRepository.DeletePostAsync(post);
 			return Result.Success("Post deleted successfully");

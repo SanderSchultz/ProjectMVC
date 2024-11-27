@@ -5,5 +5,5 @@ using Microsoft.EntityFrameworkCore;
     public interface ICommentService
     {
         Task<Comment> CreateCommentAsync(int postId, string content, string userId);
-        Task DeleteCommentAsync(int id, string userId);
+        Task<Result> DeleteCommentAsync(int id, string userId);
     }

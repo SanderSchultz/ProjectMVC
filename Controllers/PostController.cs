@@ -96,7 +96,7 @@ public class PostController : Controller
 			return RedirectToAction(nameof(Index));
 		}
 
-		TempData["SuccessMessage"] = "Post deleted successfully";
+		TempData["SuccessMessage"] = result.SuccessMessage;
 		return RedirectToAction(nameof(Index));
 	}
 }

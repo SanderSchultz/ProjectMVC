@@ -34,16 +34,16 @@ namespace ProjectMVC.Services
             return newComment;
         }
 
-        public async Task DeleteCommentAsync(int id, string userId)
+        public async Task<Result> DeleteCommentAsync(int id, string userId)
         {
             var comment = await _commentRepository.GetCommentByIdAsync(id);
-            if (comment == null)
-                throw new ArgumentException("Comment not found", nameof(id));
-
-            if (comment.User.Id != userId)
-                throw new UnauthorizedAccessException("User is not authorized to delete this comment");
+            if (comment == null || comment.User.Id != userId)
+			{
+				return Result.Failure("You are not authorized to edit this post");
+			}
 
             await _commentRepository.DeleteCommentAsync(comment);
+			return Result.Success("Comment deleted successfully");
         }
     }
 }

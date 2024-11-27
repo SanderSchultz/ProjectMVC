@@ -6,6 +6,7 @@ namespace ProjectMVC.Models
         public string Title { get; set; } = string.Empty;
         public string ImageFile { get; set; } = string.Empty;
         public int LikesCount { get; set; }
+        public DateTime Created { get; set; }
         public string User { get; set; } = string.Empty;
 		public string ProfilePicture { get; set; } = string.Empty;
 		public bool CanChangePost { get; set; }
