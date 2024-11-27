@@ -19,6 +19,8 @@ namespace ProjectMVC.Services
 			// Fetch raw posts from the repository
 			var posts = await _postRepository.GetAllPostsAsync();
 
+			var likedPostIds = await _postRepository.GetLikedPostIdsAsync(currentUserId);
+
 			// Map to DTOs and apply business logic
 			return posts.Select(post => new PostDto
 			{
@@ -30,6 +32,7 @@ namespace ProjectMVC.Services
 				User = post.User.Name,
 				ProfilePicture = post.User.ProfilePicture,
 				CanChangePost = isAdmin || post.User.Id == currentUserId,
+				IsLikedByUser = likedPostIds.Contains(post.Id),
 				Comments = post.Comments
 					.OrderByDescending(c => c.Created)
 					.Select(c => new CommentDto
@@ -81,13 +84,44 @@ namespace ProjectMVC.Services
 
 		public async Task<Result> UpdatePostAsync(int id, PostUpdateDto dto, string userId)
 		{
+
 			var post = await _postRepository.GetPostByIdAsync(id);
 			if (post == null || post.UserId != userId)
 			{
 				return Result.Failure("You are not authorized to edit this post");
 			}
 
+			string imagePath = string.Empty;
+
+			if (dto.ImageFile != null && dto.ImageFile.Length > 0)
+			{
+
+				var deletefilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", post.ImageFile.TrimStart('/'));
+				if (File.Exists(deletefilePath))
+				{
+					File.Delete(deletefilePath);
+					Console.WriteLine($"Deleted image: {deletefilePath}");
+				}
+				else
+				{
+					Console.WriteLine($"Image not found: {deletefilePath}");
+				}
+
+				var fileName = Guid.NewGuid() + Path.GetExtension(dto.ImageFile.FileName);
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+				Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					await dto.ImageFile.CopyToAsync(stream);
+				}
+
+				imagePath = $"/images/{fileName}";
+			}
+
 			post.Title = dto.Title;
+			post.ImageFile = imagePath;
 
 			await _postRepository.UpdatePostAsync(post);
 			return Result.Success("Post edited successfully");

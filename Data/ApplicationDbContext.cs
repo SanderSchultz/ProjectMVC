@@ -54,18 +54,18 @@ namespace ProjectMVC.Data
                 {
                     Id = 1,
                     Title = "First Post",
-                    ImageFile = "/images/sunset.webp",
+                    ImageFile = "/images/cat.jpg",
                     Created = DateTime.UtcNow,
-                    LikesCount = 0,
+                    LikesCount = 13,
                     UserId = adminUser.Id
                 },
                 new Post
                 {
                     Id = 2,
                     Title = "Second Post",
-                    ImageFile = "/images/cat.webp",
+                    ImageFile = "/images/hills.png",
                     Created = DateTime.UtcNow,
-                    LikesCount = 0,
+                    LikesCount = 12,
                     UserId = janeUser.Id
                 }
             );

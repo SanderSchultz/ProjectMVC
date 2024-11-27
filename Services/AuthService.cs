@@ -50,7 +50,7 @@ namespace ProjectMVC.Services
 			await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name));
 			await _authRepository.SignInAsync(user, false);
 
-			return Result.Success($"Registration successful\n\n Welcome, {user.Name}!");
+			return Result.Success($"Welcome, {user.Name}!");
 		}
 
 		public async Task<Result> LoginUserAsync(LoginDto loginDto)

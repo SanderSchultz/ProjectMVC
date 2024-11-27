@@ -10,6 +10,7 @@ namespace ProjectMVC.Models
         public string User { get; set; } = string.Empty;
 		public string ProfilePicture { get; set; } = string.Empty;
 		public bool CanChangePost { get; set; }
+		public bool IsLikedByUser { get; set; }
 		public ICollection<CommentDto> Comments { get; set; } = new List<CommentDto>();
     }
 

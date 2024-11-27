@@ -34,6 +34,7 @@ namespace ProjectMVC.Controllers
 			}
 
 			TempData["SuccessMessage"] = result.SuccessMessage;
+			TempData["MessageType"] = "login";
 			return RedirectToAction("Index", "Post");
         }
 

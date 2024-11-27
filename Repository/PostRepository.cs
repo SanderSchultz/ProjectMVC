@@ -25,6 +25,14 @@ public class PostRepository : IPostRepository
             .ToListAsync();
     }
 
+	public async Task<List<int>> GetLikedPostIdsAsync(string userId)
+	{
+		return await _context.Likes
+			.Where(like => like.User.Id == userId)
+			.Select(like => like.PostId)
+			.ToListAsync();
+	}
+
     public async Task<Post?> GetPostByIdAsync(int id)
     {
         return await _context.Posts

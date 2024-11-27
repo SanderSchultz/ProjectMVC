@@ -3,8 +3,10 @@
 
 <div class="mt-8 flex flex-col gap-10 pb-16">
     <div class="flex flex-col gap-10">
+
         @foreach (var post in Model)
         {
+
             <div class="mt-16">
                 <div class="mx-auto w-full max-w-[90%] rounded-xl outline outline-1 outline-gray-300 lg:max-w-[60%] 2xl:max-w-[50%]">
                     <div class="aspect-[4/3] overflow-hidden rounded-t-lg">
@@ -13,6 +15,8 @@
                     <div class="rounded-b-lg bg-card p-4 dark:bg-white">
                         <div class="mb-4 flex items-center justify-between">
                             <div class="flex items-center gap-2">
+
+
                                 @if(string.IsNullOrEmpty(post.ProfilePicture))
                                 {
                                     <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
@@ -23,179 +27,190 @@
                                 {
                                     <img src="@post.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full" />
                                 }
+
+
                                 <div>
                                     <div class="font-medium">@post.User</div>
+
 									@{
 										var norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
 										var norwayTime = TimeZoneInfo.ConvertTimeFromUtc(post.Created, norwayTimeZone);
 									}
-                                    <div class="text-sm text-muted-foreground">@norwayTime.ToString("dd.MM.yyyy HH:mm")</div>
+
+									<div class="text-sm">
+										<span class="text-muted-foreground">@norwayTime.ToString("dd.MM.yyyy")</span>
+										<span class="text-gray-500 ml-1">@norwayTime.ToString("HH:mm")</span>
+									</div>
+
                                 </div>
                             </div>
                         </div>
+
                         <div class="mb-4">
                             <h2 class="text-l">@post.Title</h2>
                         </div>
 
-    <div class="flex justify-between items-center mb-3">
-        <div class="flex gap-3">
-            <button class="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-pink-500 hover:bg-pink-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
-                </svg>
-                <span class="text-sm">Like</span>
-            </button>
-            <button class="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-blue-500 hover:bg-blue-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                <span class="text-sm">Download</span>
-            </button>
-            <button class="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-green-500 hover:bg-green-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="18" cy="5" r="3"></circle>
-                    <circle cx="6" cy="12" r="3"></circle>
-                    <circle cx="18" cy="19" r="3"></circle>
-                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                </svg>
-                <span class="text-sm">Share</span>
-            </button>
-			@if(User.Identity.IsAuthenticated && post.CanChangePost)
-			{
+						<div class="flex justify-between items-center mb-3">
+							<div class="flex gap-3">
 
-			<div class="relative inline-block text-left">
-            <button class="dropdown-button comment-button bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-gray-500 hover:bg-gray-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="1"></circle>
-                    <circle cx="19" cy="12" r="1"></circle>
-                    <circle cx="5" cy="12" r="1"></circle>
-                </svg>
-                <span class="sr-only">Edit</span>
-            </button>
-			<div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden">
-			<div class="py-1">
+							<form asp-controller="Like" asp-action="Toggle" method="post" class="inline">
+								<input type="hidden" name="postId" value="@post.Id" />
+								<button class="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-pink-500 hover:bg-pink-100">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="@(post.IsLikedByUser ? "currentColor" : "none")" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+									</svg>
+									<span class="text-sm">@(post.IsLikedByUser ? "Unlike" : "Like")</span>
+								</button>
+							</form>
 
-				<button class="edit-post-button text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm w-full text-left" data-id="@post.Id" data-title="@post.Title">
-				Edit	
-				</button>
 
-				<form asp-controller="Post" asp-action="Delete" method="post">
-					<input type="hidden" name="id" value="@post.Id" />
-					<button type="submit" class="text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm w-full text-left">Delete</button>
-				</form>
-			</div>
+							<a href="@post.ImageFile" download="@System.IO.Path.GetFileName(post.ImageFile)" class="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-blue-500 hover:bg-blue-100">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+									<polyline points="7 10 12 15 17 10"></polyline>
+									<line x1="12" y1="15" x2="12" y2="3"></line>
+								</svg>
+								<span class="text-sm">Download</span>
+							</a>
+
+
+							<button class="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-green-500 hover:bg-green-100">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<circle cx="18" cy="5" r="3"></circle>
+									<circle cx="6" cy="12" r="3"></circle>
+									<circle cx="18" cy="19" r="3"></circle>
+									<line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+									<line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+								</svg>
+								<span class="text-sm">Share</span>
+							</button>
+
+							@if(User.Identity.IsAuthenticated && post.CanChangePost)
+							{
+
+								<div class="relative inline-block text-left">
+									<button class="dropdown-button comment-button bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-gray-500 hover:bg-gray-100">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<circle cx="12" cy="12" r="1"></circle>
+											<circle cx="19" cy="12" r="1"></circle>
+											<circle cx="5" cy="12" r="1"></circle>
+										</svg>
+										<span class="sr-only">Edit</span>
+									</button>
+									<div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden">
+										<div class="py-1">
+
+											<button class="edit-post-button text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm w-full text-left" data-id="@post.Id" data-title="@post.Title">
+											Edit	
+											</button>
+
+											<form asp-controller="Post" asp-action="Delete" method="post">
+												<input type="hidden" name="id" value="@post.Id" />
+												<button type="submit" class="text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm w-full text-left">Delete</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							}
+
+					</div>
+
+					<div class="text-sm font-semibold text-gray-700">
+						<span class="text-pink-500">@post.LikesCount</span> likes
+					</div>
+				</div>
+
+				<div class="border-t border-gray-300 my-4"></div>
+				<div class="mt-4 space-y-2">
+
+					@if (post.Comments == null || post.Comments.Count == 0)
+					{
+						<p class="text-sm text-muted-foreground">No comments yet.</p>
+					}
+					else
+					{
+
+						@foreach (var comment in post.Comments.Take(5))
+						{
+							<div class="z-20 flex items-center justify-between gap-2">
+								<div class="flex items-center gap-2">
+
+									@if(string.IsNullOrEmpty(comment.ProfilePicture))
+									{
+										<span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+											<span class="flex h-full w-full items-center justify-center rounded-full bg-muted">@comment.User.Substring(0, 2).ToUpper()</span>
+										</span>
+									}
+									else
+									{
+										<img src="@comment.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full" />
+									}
+
+									<div>
+										<a class="mr-2 font-medium" href="/#">@comment.User</a>@comment.Content
+									</div>
+
+								</div>
+							@if(User.Identity.IsAuthenticated && comment.CanEdit)
+								{
+									<form asp-controller="Comment" asp-action="Delete" method="post">
+										<input type="hidden" name="id" value="@comment.Id" />
+										<button class="p-2 rounded group">
+										  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 stroke-black group-hover:stroke-red-500">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+										  </svg>
+										</button>
+									</form>
+								}
+						</div>
+						}
+
+						@if(post.Comments.Count() > 5)
+						{
+							<div class="flex items-center space-x-2 mt-6">
+								<div class="text-gray-500 text-sm"><a href="@Url.Action("Login", "Auth")" class="text-blue-500 hover:underline">See all comments</a></div>
+							</div>
+						}
+
+					}
+				</div>
+				@if(User.Identity.IsAuthenticated)
+				{
+					<form asp-controller="Comment" asp-action="Create" method="post" class="flex items-center space-x-2 mt-6">
+						<input type="hidden" name="postId" value="@post.Id" />
+						<input 
+							type="text" 
+							name="content"
+							placeholder="Write your comment..." 
+							class="flex-grow rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+							required
+						/>
+						<button 
+							type="submit"
+							class="rounded-lg dark:bg-gray-700 bg-gray-700 px-4 py-2 text-white hover:bg-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						>
+							Post
+						</button>
+					</form>
+				}
+				else
+				{
+					<div class="flex items-center space-x-2 mt-6">
+						<div class="text-gray-500 text-sm">Please <a href="@Url.Action("Login", "Auth")" class="text-blue-500 hover:underline">login</a> to comment</div>
+					</div>
+				}
+
+				</div>
 			</div>
 		</div>
-		}
-
-        </div>
-
-        <div class="text-sm font-semibold text-gray-700">
-            <span class="text-pink-500">42</span> likes
-        </div>
-    </div>
-
-
-
-
-
-
-
-
-
-                        <div class="border-t border-gray-300 my-4"></div>
-                        <div class="mt-4 space-y-2">
-                            @if (post.Comments == null || post.Comments.Count == 0)
-                            {
-                                <p class="text-sm text-muted-foreground">No comments yet.</p>
-                            }
-                            else
-                            {
-                                @foreach (var comment in post.Comments.Take(5))
-                                {
-                                    <div class="z-20 flex items-center justify-between gap-2">
-                                        <div class="flex items-center gap-2">
-                                            @if(string.IsNullOrEmpty(comment.ProfilePicture))
-                                            {
-                                                <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                                                    <span class="flex h-full w-full items-center justify-center rounded-full bg-muted">@comment.User.Substring(0, 2).ToUpper()</span>
-                                                </span>
-                                            }
-                                            else
-                                            {
-                                                <img src="@comment.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full" />
-                                            }
-                                            <div>
-                                                <a class="mr-2 font-medium" href="/#">@comment.User</a>@comment.Content
-                                            </div>
-                                        </div>
-                                    @if(User.Identity.IsAuthenticated && comment.CanEdit)
-                                        {
-                                            <form asp-controller="Comment" asp-action="Delete" method="post">
-                                                <input type="hidden" name="id" value="@comment.Id" />
-												<button class="p-2 rounded group">
-												  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 stroke-black group-hover:stroke-red-500">
-													<path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-												  </svg>
-												</button>
-                                            </form>
-											}
-                                    </div>
-                                }
-								@if(post.Comments.Count() > 5)
-								{
-									<div class="flex items-center space-x-2 mt-6">
-										<div class="text-gray-500 text-sm"><a href="@Url.Action("Login", "Auth")" class="text-blue-500 hover:underline">See all comments</a></div>
-									</div>
-								}
-                            }
-                        </div>
-                        @if(User.Identity.IsAuthenticated)
-                        {
-                            <form asp-controller="Comment" asp-action="Create" method="post" class="flex items-center space-x-2 mt-6">
-                                <input type="hidden" name="postId" value="@post.Id" />
-                                <input 
-                                    type="text" 
-                                    name="content"
-                                    placeholder="Write your comment..." 
-                                    class="flex-grow rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
-                                />
-                                <button 
-                                    type="submit"
-                                    class="rounded-lg dark:bg-gray-700 bg-gray-700 px-4 py-2 text-white hover:bg-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    Post
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <div class="flex items-center space-x-2 mt-6">
-                                <div class="text-gray-500 text-sm">Please <a href="@Url.Action("Login", "Auth")" class="text-blue-500 hover:underline">login</a> to comment</div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
         }
     </div>
 </div>
 
-@if (!ViewData.ModelState.IsValid)
-{
-<div id="validation-summary" class="fixed top-[0.4rem] left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg bg-red-500 p-4 text-center text-white shadow-lg transition-all duration-500 ease-out font-bold whitespace-nowrap">
-        @Html.ValidationSummary(false)
-</div>
-}
-
-<!-- Dims background when creating post! -->
+<!-- Dims background when creating post -->
 <div id="overlay-edit" class="hidden fixed inset-0 bg-black bg-opacity-50"></div>
 
-<!-- Form for creating post! -->
+<!-- Form for creating post -->
 <div id="edit-post-form" class="fixed inset-0 items-center justify-center top-[19rem] left-1/2 transform -translate-x-1/2 hidden bg-white dark:bg-gray-800 p-4 shadow-md border border-gray-200 dark:border-gray-700 rounded-md w-[27rem] h-[17.5rem] z-10">
 
 	<h1 class="block dark:text-gray-300 text-center font-bold mb-4 text-xl">Edit Post</h1>
@@ -224,59 +239,32 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
-
-    // Like Button Logic
-    const likeButtons = document.querySelectorAll('.like-button');
-    likeButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            this.classList.toggle('liked');
-            const heartIcon = this.querySelector('.heart-icon');
-
-            if (this.classList.contains('liked')) {
-                heartIcon.style.fill = '#ec4899';
-                heartIcon.style.stroke = '#ec4899';
-
-                this.classList.add('pulsing');
-                setTimeout(() => {
-                    this.classList.remove('pulsing');
-                }, 3000);
-            } else {
-                heartIcon.style.fill = 'none';
-                heartIcon.style.stroke = 'currentColor';
-            }
-
-            heartIcon.style.animation = 'none';
-            heartIcon.offsetHeight;
-            heartIcon.style.animation = null;
-        });
-    });
-
     // Comment Button Logic
-    const commentButtons = document.querySelectorAll('.comment-button');
-    const commentsDialog = document.getElementById('commentsDialog');
-    const closeCommentsDialog = document.getElementById('closeCommentsDialog');
-
-    if (commentButtons.length && commentsDialog && closeCommentsDialog) {
-        commentButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const postId = this.getAttribute('data-post-id');
-                commentsDialog.classList.remove('hidden');
-                commentsDialog.classList.add('flex');
-            });
-        });
-
-        closeCommentsDialog.addEventListener('click', function () {
-            commentsDialog.classList.add('hidden');
-            commentsDialog.classList.remove('flex');
-        });
-
-        commentsDialog.addEventListener('click', function (event) {
-            if (event.target === this) {
-                this.classList.add('hidden');
-                this.classList.remove('flex');
-            }
-        });
-    }
+    // const commentButtons = document.querySelectorAll('.comment-button');
+    // const commentsDialog = document.getElementById('commentsDialog');
+    // const closeCommentsDialog = document.getElementById('closeCommentsDialog');
+    //
+    // if (commentButtons.length && commentsDialog && closeCommentsDialog) {
+    //     commentButtons.forEach(button => {
+    //         button.addEventListener('click', function () {
+    //             const postId = this.getAttribute('data-post-id');
+    //             commentsDialog.classList.remove('hidden');
+    //             commentsDialog.classList.add('flex');
+    //         });
+    //     });
+    //
+    //     closeCommentsDialog.addEventListener('click', function () {
+    //         commentsDialog.classList.add('hidden');
+    //         commentsDialog.classList.remove('flex');
+    //     });
+    //
+    //     commentsDialog.addEventListener('click', function (event) {
+    //         if (event.target === this) {
+    //             this.classList.add('hidden');
+    //             this.classList.remove('flex');
+    //         }
+    //     });
+    // }
 
     // Dropdown Logic
     const dropdowns = document.querySelectorAll('.relative.inline-block');
@@ -310,44 +298,44 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-// Create Post and Cancel Post Logic
-const editPostButton = document.querySelectorAll(".edit-post-button");
-const cancelPostButton = document.getElementById("cancel-edit-post");
-const form = document.getElementById("edit-post-form");
-const overlay = document.getElementById("overlay-edit");
+	// Create Post and Cancel Post Logic
+	const editPostButton = document.querySelectorAll(".edit-post-button");
+	const cancelPostButton = document.getElementById("cancel-edit-post");
+	const form = document.getElementById("edit-post-form");
+	const overlay = document.getElementById("overlay-edit");
 	const postIdInput = document.getElementById("post-id");
-const titleInput = document.getElementById("title");
+	const titleInput = document.getElementById("title");
 
-if (editPostButton && cancelPostButton && form && overlay) {
+	if (editPostButton && cancelPostButton && form && overlay) {
 
 
-    // Add click event listener to each create post button
-    editPostButton.forEach(button => {
-        button.addEventListener('click', function(){
+		// Add click event listener to each create post button
+		editPostButton.forEach(button => {
+			button.addEventListener('click', function(){
 
-			const postId = this.getAttribute("data-id");
-			const postTitle = this.getAttribute("data-title");
+				const postId = this.getAttribute("data-id");
+				const postTitle = this.getAttribute("data-title");
 
-            postIdInput.value = postId;
-            titleInput.value = postTitle;
+				postIdInput.value = postId;
+				titleInput.value = postTitle;
 
-            form.classList.toggle("hidden");
-            overlay.classList.toggle("hidden");
-        });
-    });
+				form.classList.toggle("hidden");
+				overlay.classList.toggle("hidden");
+			});
+		});
 
-    // Add event listener to cancel button
-    cancelPostButton.addEventListener("click", function () {
-        form.classList.add("hidden");
-        overlay.classList.add("hidden");
-    });
+		// Add event listener to cancel button
+		cancelPostButton.addEventListener("click", function () {
+			form.classList.add("hidden");
+			overlay.classList.add("hidden");
+		});
 
-    // Add event listener to overlay
-    overlay.addEventListener("click", function () {
-        form.classList.add("hidden");
-        overlay.classList.add("hidden");
-    });
-}
+		// Add event listener to overlay
+		overlay.addEventListener("click", function () {
+			form.classList.add("hidden");
+			overlay.classList.add("hidden");
+		});
+	}
 
 });
 

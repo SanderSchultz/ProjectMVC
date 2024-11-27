@@ -1,18 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProjectMVC.Data;
 using ProjectMVC.Models;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace ProjectMVC.Controllers
 {
     public class LikeController : Controller
     {
-        private readonly ApplicationDbContext _context;
+		private readonly ILikeService _likeService;
 
-        public LikeController(ApplicationDbContext context)
+        public LikeController(ILikeService likeService)
         {
-            _context = context;
+			_likeService = likeService;
         }
 
         // POST: Like/Toggle
@@ -20,38 +19,18 @@ namespace ProjectMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Toggle(int postId)
         {
-            var post = await _context.Posts.FindAsync(postId);
-            if (post == null)
-                return NotFound();
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
-            if (user == null)
-                return Unauthorized();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var result = await _likeService.ToggleLikeAsync(postId, userId);
 
-            var existingLike = await _context.Likes
-                .FirstOrDefaultAsync(l => l.PostId == postId && l.User.Id == user.Id);
+			if(!result.Succeeded)
+			{
+				TempData["ErrorMessage"] = result.Error;
+				return RedirectToAction("Index", "Post");
+			}
 
-            if (existingLike != null)
-            {
-                // Unlike
-                _context.Likes.Remove(existingLike);
-                post.LikesCount--;
-            }
-            else
-            {
-                // Like
-                var newLike = new Like
-                {
-                    PostId = postId,
-                    Post = post,
-                    User = user
-                };
-                _context.Likes.Add(newLike);
-                post.LikesCount++;
-            }
+			return RedirectToAction("Index", "Post");
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Post");
         }
     }
 }

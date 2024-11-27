@@ -99,4 +99,5 @@ public class PostController : Controller
 		TempData["SuccessMessage"] = result.SuccessMessage;
 		return RedirectToAction(nameof(Index));
 	}
+
 }
