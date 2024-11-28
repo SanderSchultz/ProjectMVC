@@ -1,0 +1,8 @@
+@model IEnumerable<ProjectMVC.DTO.PostDto>
+
+<div class="flex flex-col gap-10">
+    @foreach (var post in Model)
+    {
+        @await Html.PartialAsync("_PostItem", post)
+    }
+</div>

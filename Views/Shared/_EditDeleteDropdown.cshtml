@@ -1,0 +1,23 @@
+@model ProjectMVC.DTO.PostDto
+
+<div class="relative inline-block text-left">
+    <button class="dropdown-button comment-button bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-gray-500 hover:bg-gray-100">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="19" cy="12" r="1"></circle>
+            <circle cx="5" cy="12" r="1"></circle>
+        </svg>
+        <span class="sr-only">Edit</span>
+    </button>
+    <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden">
+        <div class="py-1">
+            <button class="edit-post-button text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm w-full text-left" data-id="@Model.Id" data-title="@Model.Title">
+                Edit    
+            </button>
+            <form asp-controller="Post" asp-action="Delete" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="text-gray-700 hover:bg-gray-200 rounded-md mx-1 block px-4 py-2 text-sm w-full text-left">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>

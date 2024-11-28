@@ -1,0 +1,59 @@
+@model ProjectMVC.DTO.CommentDto
+
+@functions {
+    public string GetRelativeTime(DateTime createdAt)
+    {
+        var timeSpan = DateTime.UtcNow - createdAt;
+
+        if (timeSpan.TotalMinutes < 1)
+            return "just now";
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} minutes ago";
+        if (timeSpan.TotalHours < 2)
+            return $"{(int)timeSpan.TotalHours} hour ago";
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hours ago";
+        if (timeSpan.TotalDays < 7)
+            return $"{(int)timeSpan.TotalDays} days ago";
+        if (timeSpan.TotalDays < 30)
+            return $"{(int)(timeSpan.TotalDays / 7)} weeks ago";
+        if (timeSpan.TotalDays < 365)
+            return $"{(int)(timeSpan.TotalDays / 30)} months ago";
+
+        return $"{(int)(timeSpan.TotalDays / 365)} years ago";
+    }
+}
+
+<div class="z-20 flex items-center justify-between gap-2 mb-3">
+    <div class="flex items-center gap-2">
+        @if(string.IsNullOrEmpty(Model.ProfilePicture))
+        {
+            <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                <span class="flex h-full w-full items-center justify-center rounded-full bg-muted">@Model.User.Substring(0, 2).ToUpper()</span>
+            </span>
+        }
+        else
+        {
+            <img src="@Model.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full" />
+        }
+
+        <div class="flex flex-col leading-tight">
+            <div>
+                <a class="mr-1 font-medium text-sm" href="/#">@Model.User</a>
+                <span class="text-gray-700 text-sm">@Model.Content</span>
+            </div>
+            <span class="text-[0.7rem] text-gray-500 mt-[-2px]">@GetRelativeTime(Model.Created)</span>
+        </div>
+    </div>
+    @if(User.Identity.IsAuthenticated && Model.CanEdit)
+    {
+        <form asp-controller="Comment" asp-action="Delete" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button class="p-2 rounded group">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 stroke-black group-hover:stroke-red-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+              </svg>
+            </button>
+        </form>
+    }
+</div>

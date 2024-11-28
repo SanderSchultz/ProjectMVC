@@ -1,0 +1,18 @@
+@model int
+
+<form asp-controller="Comment" asp-action="Create" method="post" class="flex items-center space-x-2 mt-6">
+    <input type="hidden" name="postId" value="@Model" />
+    <input 
+        type="text" 
+        name="content"
+        placeholder="Write your comment..." 
+        class="flex-grow rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+    />
+    <button 
+        type="submit"
+        class="rounded-lg dark:bg-gray-700 bg-gray-700 px-4 py-2 text-white hover:bg-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+        Post
+    </button>
+</form>

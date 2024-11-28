@@ -1,0 +1,70 @@
+@model ProjectMVC.DTO.PostDto
+
+<div class="mt-16 post-container">
+    <div class="mx-auto w-full max-w-[90%] rounded-xl outline outline-1 outline-gray-300 lg:max-w-[60%] 2xl:max-w-[50%]">
+        <div class="aspect-[4/3] overflow-hidden rounded-t-lg">
+            <img src="@Model.ImageFile" alt="Post Image" width="600" height="400" class="h-full w-full object-cover" style="aspect-ratio: 600 / 400; object-fit: cover;">
+        </div>
+        <div class="rounded-b-lg bg-card p-4 dark:bg-white">
+            <div class="mb-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    @if(string.IsNullOrEmpty(Model.ProfilePicture))
+                    {
+                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                            <span class="flex h-full w-full items-center justify-center rounded-full bg-muted">@Model.User.Substring(0, 2).ToUpper()</span>
+                        </span>
+                    }
+                    else
+                    {
+                        <img src="@Model.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full" />
+                    }
+
+                    <div>
+                        <div class="font-medium">@Model.User</div>
+                        @{
+                            var norwayTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+                            var norwayTime = TimeZoneInfo.ConvertTimeFromUtc(Model.Created, norwayTimeZone);
+                        }
+                        <div class="text-sm">
+                            <span class="text-muted-foreground">@norwayTime.ToString("dd.MM.yyyy")</span>
+                            <span class="text-gray-500 ml-1">@norwayTime.ToString("HH:mm")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h2 class="text-l">@Model.Title</h2>
+            </div>
+
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex gap-3">
+                    @await Html.PartialAsync("_LikeButton", Model)
+                    @await Html.PartialAsync("_DownloadButton", Model)
+                    @await Html.PartialAsync("_ShareButton")
+                    @if(User.Identity.IsAuthenticated && Model.CanChangePost)
+                    {
+                        @await Html.PartialAsync("_EditDeleteDropdown", Model)
+                    }
+                </div>
+                <div class="text-sm font-semibold text-gray-700">
+                    <span class="text-pink-500">@Model.LikesCount</span> likes
+                </div>
+            </div>
+
+            <div class="border-t border-gray-300 my-4"></div>
+            @await Html.PartialAsync("_CommentList", Model)
+
+            @if(User.Identity.IsAuthenticated)
+            {
+                @await Html.PartialAsync("_CommentForm", Model.Id)
+            }
+            else
+            {
+                <div class="flex items-center space-x-2 mt-6">
+                    <div class="text-gray-500 text-sm">Please <a href="@Url.Action("Login", "Auth")" class="text-blue-500 hover:underline">login</a> to comment</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

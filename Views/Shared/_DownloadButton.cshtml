@@ -1,0 +1,10 @@
+@model ProjectMVC.DTO.PostDto
+
+<a href="@Model.ImageFile" download="@System.IO.Path.GetFileName(Model.ImageFile)" class="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-blue-500 hover:bg-blue-100">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+    </svg>
+    <span class="text-sm">Download</span>
+</a>

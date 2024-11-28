@@ -66,7 +66,7 @@ public class PostController : Controller
     {
         if (!ModelState.IsValid)
 		{
-			TempData["ErrorMessage"] = "Invalid data used in form";
+			TempData["ErrorMessage"] = "You need to choose either a Picture or a Title to update post";
 			return RedirectToAction(nameof(Index));
 		}
 

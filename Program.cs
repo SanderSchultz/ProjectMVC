@@ -25,6 +25,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddRazorPages();
 
+////////REMOVE
+builder.Services.AddMemoryCache();
+
 //Implements role for who can edit posts, admins or owner of post
 builder.Services.AddAuthorization(options =>
 {

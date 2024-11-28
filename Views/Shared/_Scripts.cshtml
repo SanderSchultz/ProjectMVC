@@ -1,0 +1,105 @@
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Dropdown Logic
+    const dropdowns = document.querySelectorAll('.relative.inline-block');
+
+    dropdowns.forEach(dropdown => {
+        const button = dropdown.querySelector('.dropdown-button');
+        const menu = dropdown.querySelector('.dropdown-menu');
+
+        button.addEventListener('click', function (event) {
+            event.stopPropagation();
+            const isVisible = !menu.classList.contains('hidden');
+
+            document.querySelectorAll('.dropdown-menu:not(.hidden)').forEach(openMenu => {
+                if (openMenu !== menu) {
+                    openMenu.classList.add('hidden');
+                    openMenu.previousElementSibling.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            menu.classList.toggle('hidden');
+            button.setAttribute('aria-expanded', (!isVisible).toString());
+        });
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.relative.inline-block')) {
+            document.querySelectorAll('.dropdown-menu:not(.hidden)').forEach(menu => {
+                menu.classList.add('hidden');
+                menu.previousElementSibling.setAttribute('aria-expanded', 'false');
+            });
+        }
+    });
+
+    // Edit Post and Cancel Post Logic
+    const editPostButton = document.querySelectorAll(".edit-post-button");
+    const cancelPostButton = document.getElementById("cancel-edit-post");
+    const form = document.getElementById("edit-post-form");
+    const overlay = document.getElementById("overlay-edit");
+    const postIdInput = document.getElementById("post-id");
+    const titleInput = document.getElementById("title");
+
+    if (editPostButton && cancelPostButton && form && overlay) {
+        // Add click event listener to each edit post button
+        editPostButton.forEach(button => {
+            button.addEventListener('click', function(){
+                const postId = this.getAttribute("data-id");
+                const postTitle = this.getAttribute("data-title");
+
+                postIdInput.value = postId;
+                titleInput.value = postTitle;
+
+                document.body.classList.add('overflow-hidden');
+                form.classList.toggle("hidden");
+                overlay.classList.toggle("hidden");
+            });
+        });
+
+        // Add event listener to cancel button
+        cancelPostButton.addEventListener("click", function () {
+            document.body.classList.remove('overflow-hidden');
+            form.classList.add("hidden");
+            overlay.classList.add("hidden");
+        });
+
+        // Add event listener to overlay
+        overlay.addEventListener("click", function () {
+            document.body.classList.remove('overflow-hidden');
+            form.classList.add("hidden");
+            overlay.classList.add("hidden");
+        });
+    }
+
+    // Loop through each post container
+    document.querySelectorAll(".post-container").forEach(post => {
+        const commentPostButton = post.querySelector(".comment-post-button");
+        const cancelCommentPostButton = post.querySelector(".cancel-comment-post");
+        const formcomment = post.querySelector(".comment-post-form");
+        const overlaycomment = post.querySelector(".overlay-comment");
+
+        if (commentPostButton && cancelCommentPostButton && formcomment && overlaycomment) {
+            // Add click event listener to the "Post Comment" button
+            commentPostButton.addEventListener('click', function () {
+                document.body.classList.add('overflow-hidden');
+                formcomment.classList.toggle("hidden");
+                overlaycomment.classList.toggle("hidden");
+            });
+
+            // Add click event listener to the "Cancel" button
+            cancelCommentPostButton.addEventListener("click", function () {
+                document.body.classList.remove('overflow-hidden');
+                formcomment.classList.add("hidden");
+                overlaycomment.classList.add("hidden");
+            });
+
+            // Add click event listener to the overlay
+            overlaycomment.addEventListener("click", function () {
+                document.body.classList.remove('overflow-hidden');
+                formcomment.classList.add("hidden");
+                overlaycomment.classList.add("hidden");
+            });
+        }
+    });
+});
+</script>

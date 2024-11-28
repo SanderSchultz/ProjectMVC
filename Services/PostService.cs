@@ -121,10 +121,10 @@ namespace ProjectMVC.Services
 				}
 
 				imagePath = $"/images/{fileName}";
+				post.ImageFile = imagePath;
 			}
 
 			post.Title = dto.Title;
-			post.ImageFile = imagePath;
 
 			await _postRepository.UpdatePostAsync(post);
 			return Result.Success("Post edited successfully");
