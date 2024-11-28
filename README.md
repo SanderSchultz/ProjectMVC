@@ -1,1 +1,1 @@
-Fix delete, fix images being delete from wwwroot
+Add comments thing where you can see all comments

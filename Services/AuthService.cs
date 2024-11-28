@@ -43,8 +43,7 @@ namespace ProjectMVC.Services
 
 			if (!result.Succeeded)
 			{
-
-				return Result.Failure(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
+				return Result.Failure(string.Join(Environment.NewLine, result.Errors.Select(error => error.Description)));
 			}
 
 			await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name));
@@ -62,14 +61,14 @@ namespace ProjectMVC.Services
 			}
 
 			var userClaims = await _authRepository.GetUserClaimsAsync(user);
-			if(!userClaims.Any(c => c.Type == "Name"))
+			if(!userClaims.Any(claims => claims.Type == "Name"))
 			{
 				await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name ?? "Unknown User"));
 			}
 
 			await _authRepository.SignInAsync(user, false);
 
-			return Result.Success($"Welcome {user.Name}");
+			return Result.Success($"Welcome, {user.Name}!");
 		}
 
 		public async Task<Result> LogoutUserAsync()
