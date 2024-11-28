@@ -1,11 +1,9 @@
-using System;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using ProjectMVC.Models;
-using ProjectMVC.Models;
-using ProjectMVC.Repositories;
+using ProjectMVC.DTO;
+using ProjectMVC.DAL.Entities;
+using ProjectMVC.Services.Interfaces;
+using ProjectMVC.DAL.Repository.Interfaces;
 
 namespace ProjectMVC.Services
 {

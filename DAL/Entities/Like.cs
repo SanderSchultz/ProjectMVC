@@ -1,6 +1,5 @@
-using System;
 
-namespace ProjectMVC.Models
+namespace ProjectMVC.DAL.Entities
 {
 	public class Like
 	{

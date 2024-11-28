@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using ProjectMVC.Models;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using ProjectMVC.DAL.Entities;
+using ProjectMVC.DAL.Repository.Interfaces;
+using ProjectMVC.Services.Interfaces;
 
 public class LikeService : ILikeService
 {

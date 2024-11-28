@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ProjectMVC.Models
+namespace ProjectMVC.DTO
 {
     public class LoginDto
     {

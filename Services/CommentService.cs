@@ -1,5 +1,7 @@
 using ProjectMVC.Models;
-using ProjectMVC.Repositories;
+using ProjectMVC.DAL.Repository.Interfaces;
+using ProjectMVC.DAL.Entities;
+using ProjectMVC.Services.Interfaces;
 
 namespace ProjectMVC.Services
 {
@@ -12,15 +14,18 @@ namespace ProjectMVC.Services
 			_commentRepository = commentRepository;
         }
 
-        public async Task<Comment> CreateCommentAsync(int postId, string content, string userId)
+        public async Task<Result> CreateCommentAsync(int postId, string content, string userId)
         {
             var post = await _commentRepository.GetPostByIdAsync(postId);
-            if (post == null)
-                throw new ArgumentException("Post not found", nameof(postId));
+            if (post == null){
+				return Result.Failure("Post no longer exist");
+			}
 
             var user = await _commentRepository.GetUserByIdAsync(userId);
             if (user == null)
-                throw new ArgumentException("User not found", nameof(userId));
+			{
+				return Result.Failure("You need to be signed in to comment");
+			}
 
             var newComment = new Comment
             {
@@ -31,7 +36,7 @@ namespace ProjectMVC.Services
             };
 
             await _commentRepository.AddCommentAsync(newComment);
-            return newComment;
+			return Result.Success("Comment added successfully");
         }
 
         public async Task<Result> DeleteCommentAsync(int id, string userId)

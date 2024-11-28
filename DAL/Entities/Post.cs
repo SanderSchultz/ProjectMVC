@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
 
-namespace ProjectMVC.Models
+namespace ProjectMVC.DAL.Entities
 {
     public class Post
     {

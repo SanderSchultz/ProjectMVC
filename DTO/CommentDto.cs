@@ -1,4 +1,4 @@
-namespace ProjectMVC.Models
+namespace ProjectMVC.DTO
 {
     public class CommentDto
     {

@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using ProjectMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using ProjectMVC.DTO;
+using ProjectMVC.Services.Interfaces;
 
 [Authorize]
 public class PostController : Controller

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ProjectMVC.Data;
-using ProjectMVC.Models;
+using ProjectMVC.DAL.Repository;
+using ProjectMVC.DAL.Entities;
+using ProjectMVC.DAL.Repository.Interfaces;
 using ProjectMVC.Services;
+using ProjectMVC.Services.Interfaces;
 using ProjectMVC.Repositories;
 using System.Security.Claims;
 

@@ -1,8 +1,9 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using ProjectMVC.Models;
+using ProjectMVC.DAL.Entities;
+using ProjectMVC.DAL.Repository.Interfaces;
 
-namespace ProjectMVC.Repositories
+namespace ProjectMVC.DAL.Repository
 {
 	public class AuthRepository : IAuthRepository
 	{

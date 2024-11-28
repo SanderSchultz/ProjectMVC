@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using ProjectMVC.Services;
+using ProjectMVC.Services.Interfaces;
 
 [Authorize]
 public class CommentController : Controller
@@ -44,7 +44,6 @@ public class CommentController : Controller
 			return RedirectToAction("Index", "Post");
 		}
 
-		TempData["SuccessMessage"] = result.SuccessMessage;
 		return RedirectToAction("Index", "Post");
 	}
 }

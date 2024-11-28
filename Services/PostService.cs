@@ -1,6 +1,8 @@
-// File: Services/PostService.cs
+using ProjectMVC.DAL.Entities;
+using ProjectMVC.DAL.Repository.Interfaces;
+using ProjectMVC.Services.Interfaces;
+using ProjectMVC.DTO;
 using ProjectMVC.Models;
-using ProjectMVC.Repositories;
 
 namespace ProjectMVC.Services
 {
@@ -34,14 +36,15 @@ namespace ProjectMVC.Services
 				CanChangePost = isAdmin || post.User.Id == currentUserId,
 				IsLikedByUser = likedPostIds.Contains(post.Id),
 				Comments = post.Comments
-					.OrderByDescending(c => c.Created)
+					.OrderBy(c => c.Created)
 					.Select(c => new CommentDto
 					{
 						Id = c.Id,
 						User = c.User.Name,
 						ProfilePicture = c.User.ProfilePicture,
 						Content = c.Content,
-						CanEdit = c.User.Id == currentUserId
+						CanEdit = c.User.Id == currentUserId,
+						Created = c.Created
 					}).ToList()
 			}).ToList();
 		}

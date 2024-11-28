@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProjectMVC.Models;
 using System.Security.Claims;
+using ProjectMVC.Services.Interfaces;
 
 namespace ProjectMVC.Controllers
 {
@@ -14,7 +13,6 @@ namespace ProjectMVC.Controllers
 			_likeService = likeService;
         }
 
-        // POST: Like/Toggle
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Toggle(int postId)

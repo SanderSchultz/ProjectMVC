@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using ProjectMVC.Models;
+using ProjectMVC.DAL.Entities;
 
-namespace ProjectMVC.Data
+namespace ProjectMVC.DAL.Repository
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

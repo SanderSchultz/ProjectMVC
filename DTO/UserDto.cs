@@ -1,5 +1,4 @@
-// DTOs/UserDto.cs
-namespace ProjectMVC.Models
+namespace ProjectMVC.DTO
 {
     public class UserDto
     {

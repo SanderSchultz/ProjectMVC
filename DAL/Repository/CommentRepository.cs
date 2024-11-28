@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using ProjectMVC.Data;
-using ProjectMVC.Models;
+using ProjectMVC.DAL.Entities;
+using ProjectMVC.DAL.Repository.Interfaces;
+using ProjectMVC.DAL.Repository;
 
-namespace ProjectMVC.Repositories
+namespace ProjectMVC.DAL.Repository
 {
 	public class CommentRepository : ICommentRepository
 	{

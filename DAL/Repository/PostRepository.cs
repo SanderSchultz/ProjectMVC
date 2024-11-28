@@ -1,7 +1,7 @@
-// File: Repositories/PostRepository.cs
 using Microsoft.EntityFrameworkCore;
-using ProjectMVC.Data;
-using ProjectMVC.Models;
+using ProjectMVC.DAL.Entities;
+using ProjectMVC.DAL.Repository;
+using ProjectMVC.DAL.Repository.Interfaces;
 
 namespace ProjectMVC.Repositories
 {

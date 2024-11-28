@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using ProjectMVC.Models;
-using System.Security.Claims;
+using ProjectMVC.DTO;
+using ProjectMVC.Services.Interfaces;
 
 namespace ProjectMVC.Controllers
 {

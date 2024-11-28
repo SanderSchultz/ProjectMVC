@@ -1,0 +1,26 @@
+@model ProjectMVC.DTO.PostDto
+
+<div class="mt-16 post-container">
+    <div class="mx-auto w-full max-w-[90%] rounded-xl outline outline-1 outline-gray-300 lg:max-w-[60%] 2xl:max-w-[50%]">
+        <!-- Image Section -->
+        <div class="aspect-[4/3] overflow-hidden rounded-t-lg">
+            <img src="@Model.ImageFile" alt="Post Image" width="600" height="400" class="h-full w-full object-cover" style="aspect-ratio: 600 / 400; object-fit: cover;">
+        </div>
+        <!-- Post Details -->
+        <div class="rounded-b-lg bg-card p-4 dark:bg-white">
+            <div class="mb-4 flex items-center justify-between">
+                @await Html.PartialAsync("_PostHeader", Model)
+            </div>
+
+            <div class="mb-4">
+                <h2 class="text-l">@Model.Title</h2>
+            </div>
+
+            <!-- Actions -->
+            @await Html.PartialAsync("_PostActions", Model)
+
+            <!-- Comments -->
+            @await Html.PartialAsync("_PostComments", Model)
+        </div>
+    </div>
+</div>
