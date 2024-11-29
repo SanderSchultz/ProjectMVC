@@ -124,7 +124,10 @@ namespace ProjectMVC.Services
 				post.ImageFile = imagePath;
 			}
 
-			post.Title = dto.Title;
+			if(!string.IsNullOrEmpty(dto.Title))
+			{
+				post.Title = dto.Title;
+			}
 
 			await _postRepository.UpdatePostAsync(post);
 			return Result.Success("Post edited successfully");

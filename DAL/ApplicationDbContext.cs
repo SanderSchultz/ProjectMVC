@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ProjectMVC.DAL.Entities;
 
-namespace ProjectMVC.DAL.Repository
+namespace ProjectMVC.DAL
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

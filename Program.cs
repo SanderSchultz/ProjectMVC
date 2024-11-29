@@ -5,7 +5,8 @@ using ProjectMVC.DAL.Entities;
 using ProjectMVC.DAL.Repository.Interfaces;
 using ProjectMVC.Services;
 using ProjectMVC.Services.Interfaces;
-using ProjectMVC.Repositories;
+using ProjectMVC.Repository;
+using ProjectMVC.DAL;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ILikeService, LikeService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 var app = builder.Build();
 

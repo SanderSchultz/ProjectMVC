@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectMVC.DAL.Repository.Interfaces;
-using ProjectMVC.DAL.Repository;
+using ProjectMVC.DAL;
 using ProjectMVC.DAL.Entities;
 
 public class LikeRepository : ILikeRepository

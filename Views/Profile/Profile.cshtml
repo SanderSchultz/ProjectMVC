@@ -1,0 +1,108 @@
+<div class="container mx-auto mt-[6rem] mb-16 flex justify-center">
+    @if (User.Identity.IsAuthenticated)
+    {
+        var username = User.FindFirst("Name")?.Value;
+        var userEmail = User.FindFirst("Email")?.Value;
+        var usernamePicture = User.FindFirst("ProfilePicture")?.Value;
+        
+        <div class="max-w-md w-full">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">@username</h1>
+            <div class="flex flex-col items-center mb-8">
+                <div class="flex-shrink-0 relative group mb-6">
+                    @if (!string.IsNullOrEmpty(usernamePicture))
+                    {
+                        <img src="@usernamePicture" alt="Profile Picture" class="h-48 w-48 rounded-full object-cover" />
+                        <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                             onclick="document.getElementById('profilePictureUpload').click();">
+                            <span class="text-white text-sm">Change Picture</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="h-48 w-48 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center cursor-pointer"
+                             onclick="document.getElementById('profilePictureUpload').click();">
+                            <span class="text-gray-500 dark:text-gray-400 text-sm text-center">Click here to add image</span>
+                        </div>
+                    }
+                    <input type="file" id="profilePictureUpload" class="hidden" accept="image/*" onchange="handleProfilePictureChange(event)" />
+                </div>
+                <div class="w-full space-y-4">
+                    <div class="space-y-2">
+                        <label for="name" class="block text-sm font-semibold text-gray-600 dark:text-gray-300">Name</label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            value="@username" 
+                            class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="email" class="block text-sm font-semibold text-gray-600 dark:text-gray-300">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            value="@userEmail" 
+                            class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <button type="submit" class="w-full px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+            <div class="mt-8">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Change Password</h2>
+                <form class="space-y-4">
+                    <div class="space-y-2">
+                        <label for="oldPassword" class="block text-sm font-semibold text-gray-600 dark:text-gray-300">Old Password</label>
+                        <input 
+                            type="password" 
+                            id="oldPassword" 
+                            class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="newPassword" class="block text-sm font-semibold text-gray-600 dark:text-gray-300">New Password</label>
+                        <input 
+                            type="password" 
+                            id="newPassword" 
+                            class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="confirmNewPassword" class="block text-sm font-semibold text-gray-600 dark:text-gray-300">Confirm New Password</label>
+                        <input 
+                            type="password" 
+                            id="confirmNewPassword" 
+                            class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <button type="submit" class="w-full px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                        Change Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center max-w-md w-full">
+            <p class="text-xl text-gray-600 dark:text-gray-400">Please log in to view your profile.</p>
+        </div>
+    }
+</div>
+
+<script>
+    function handleProfilePictureChange(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector('img[alt="Profile Picture"]').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+            // Here you would typically upload the file to your server
+            // and update the user's profile picture in the database
+        }
+    }
+</script>
