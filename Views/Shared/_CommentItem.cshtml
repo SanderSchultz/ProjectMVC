@@ -26,6 +26,7 @@
 
 <div class="z-20 flex items-center justify-between gap-2 mb-3">
     <div class="flex items-center gap-2">
+
         @if(string.IsNullOrEmpty(Model.ProfilePicture))
         {
             <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
@@ -34,7 +35,7 @@
         }
         else
         {
-            <img src="@Model.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full" />
+            <img src="@Model.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full object-cover" />
         }
 
         <div class="flex flex-col leading-tight">

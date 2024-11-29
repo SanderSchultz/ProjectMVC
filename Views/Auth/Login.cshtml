@@ -27,7 +27,7 @@
 
 @if (!ViewData.ModelState.IsValid)
 {
-<div id="validation-summary" class="fixed top-4 left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 max-w-md rounded-lg bg-red-500 p-4 text-center text-white shadow-lg transition-all duration-500 ease-out font-bold whitespace-nowrap">
+<div id="validation-summary" class="fixed top-[0.3rem] left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 max-w-md rounded-lg bg-red-500 p-4 text-center text-white shadow-lg transition-all duration-500 ease-out font-bold whitespace-nowrap">
         @Html.ValidationSummary(false)
 </div>
 }

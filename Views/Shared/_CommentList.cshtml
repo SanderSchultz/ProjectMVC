@@ -14,8 +14,8 @@
 
         @if(Model.Comments.Count() > 5)
         {
-            <div class="flex items-center space-x-2 mt-6">
-                <div class="text-gray-500 text-sm"><a class="comment-post-button text-blue-500 hover:cursor-pointer">See all comments</a></div>
+            <div class="flex items-center space-x-2 mt-8 select-none">
+                <div class="text-gray-500 text-sm mt-2 select-none"><a class="comment-post-button text-blue-500 hover:cursor-pointer select-none">See all comments</a></div>
             </div>
 
             <div class="overlay-comment hidden fixed inset-0 bg-black bg-opacity-50"></div>

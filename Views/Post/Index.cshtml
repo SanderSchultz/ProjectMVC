@@ -1,38 +1,5 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div class="container mx-auto">
-
-    <h1 class="text-3xl font-bold mb-6 text-center mt-[6rem] dark:text-white">Recent Posts</h1>
-
-    <partial name="_Posting"/>
-
-</div>
-
-<!-- Displays message if something successful in backend happens -->
-@if (ViewBag.SuccessMessage != null)
-{
-	<div id="validation-summary" 
-		 class="fixed top-[0.4rem] left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg p-4 text-center shadow-lg transition-all duration-500 ease-out font-bold @(TempData["MessageType"] as string == "login" ? "bg-gray-100 text-black" : "bg-green-500 text-white")">
-		@ViewBag.SuccessMessage
-	</div>
-}
-
-<!-- Displays message if an error in backend happens -->
-@if (!ViewData.ModelState.IsValid)
-{
-	<div id="validation-summary" class="fixed top-[0.4rem] left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg bg-red-500 p-4 text-center text-white shadow-lg transition-all duration-500 ease-out font-bold whitespace-nowrap">
-			@Html.ValidationSummary(false)
-	</div>
-}
-
+﻿
 <script>
-
-	// Resets the scroll position for better user experience, as this is not a SPA
-    if ('scrollRestoration' in history) {
-        history.scrollRestoration = 'manual';
-    }
 
     window.addEventListener("beforeunload", function () {
         localStorage.setItem("scrollPosition", window.scrollY);
@@ -61,3 +28,29 @@
         }
     });
 </script>
+
+<div class="container mx-auto">
+
+    <h1 class="text-3xl font-bold mb-6 text-center mt-[6rem] dark:text-white">Recent Posts</h1>
+
+    <partial name="_Posting"/>
+
+</div>
+
+<!-- Displays message if something successful in backend happens -->
+@if (ViewBag.SuccessMessage != null)
+{
+	<div id="validation-summary" 
+		 class="fixed top-[0.4rem] left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg p-4 text-center shadow-lg transition-all duration-500 ease-out font-bold @(TempData["MessageType"] as string == "login" ? "bg-gray-100 text-black" : "bg-green-500 text-white")">
+		@ViewBag.SuccessMessage
+	</div>
+}
+
+<!-- Displays message if an error in backend happens -->
+@if (!ViewData.ModelState.IsValid)
+{
+	<div id="validation-summary" class="fixed top-[0.4rem] left-1/2 transform -translate-x-1/2 -translate-y-full opacity-0 z-50 w-auto max-w-screen rounded-lg bg-red-500 p-4 text-center text-white shadow-lg transition-all duration-500 ease-out font-bold whitespace-nowrap">
+			@Html.ValidationSummary(false)
+	</div>
+}
+

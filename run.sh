@@ -15,17 +15,33 @@ run_command() {
     tmux send-keys "$1" C-m
 }
 
+rebase(){
+	rm -rf Migrations
+
+	rm ProjectMVC.db
+
+	dotnet ef migrations add Initial
+
+	dotnet ef database update
+}
+
 # Start a new tmux session
 tmux new-session -d -s something_nice
 
 # Use gum to choose which components to run
-CHOICE=$(gum choose --header "Do you want to run the frontend or backend?" --item.foreground 250 "Frontend")
+CHOICE=$(gum choose --header "Do you want to run the frontend or backend?" --item.foreground 250 "Frontend" "Rebuild")
 
 case $CHOICE in
     "Frontend")
         tmux send-keys "npx tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/output.css --watch" C-m
+        # run_command "dotnet watch --no-hot-reload"
         run_command "dotnet watch"
         ;;
+	"Rebuild")
+		rebase
+        tmux send-keys "npx tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/output.css --watch" C-m
+        run_command "dotnet watch --no-hot-reload"
+		;;
     *)
         echo "Invalid choice. Exiting."
         tmux kill-session -t webapp_social

@@ -33,15 +33,6 @@
 	  </PackageReference>
 	</ItemGroup>
 
-    <!-- <ItemGroup> -->
-    <!--   <PackageReference Include="Tailwind.Extensions.AspNetCore" Version="1.0.0" /> -->
-    <!-- </ItemGroup> -->
-
-    <!-- <Target Name="Tailwind" BeforeTargets="Build"> -->
-    <!--     <Exec Command="npm run css:build" /> -->
-    <!-- </Target> -->
-
-
 <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="npx tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/output.css" />
 </Target>

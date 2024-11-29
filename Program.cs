@@ -25,9 +25,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddRazorPages();
 
-////////REMOVE
-builder.Services.AddMemoryCache();
-
 //Implements role for who can edit posts, admins or owner of post
 builder.Services.AddAuthorization(options =>
 {
@@ -56,6 +53,17 @@ builder.Services.AddScoped<ILikeService, LikeService>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    // Apply pending migrations
+    dbContext.Database.Migrate();
+
+    // Optional: Log for debugging
+    Console.WriteLine("Migrations applied successfully.");
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -64,7 +72,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=1800");
+    }
+});
+// app.UseStaticFiles();
 
 app.UseRouting();
 

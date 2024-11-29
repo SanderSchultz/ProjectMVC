@@ -19,10 +19,16 @@
             <div class="flex flex-row gap-4 items-center">
 				@if(User.Identity.IsAuthenticated)
 				{
-				var username = User.FindFirst("Name")?.Value;
-				<div asp-controller="Post" asp-action="Index" class="text-2xl font-bold text-gray-900 dark:text-white">
-					<h1 class="text-center">@username</h1>
-				</div>
+					var username = User.FindFirst("Name")?.Value;
+					var usernamePicture = User.FindFirst("ProfilePicture")?.Value;
+					@if(!string.IsNullOrEmpty(usernamePicture))
+					{
+					<img src="@usernamePicture" alt="Pic" class="h-9 w-9 rounded-full object-cover" />
+
+					}
+					<div class="text-2xl font-bold text-gray-900 dark:text-white">
+						<h1 class="text-center">@username</h1>
+					</div>
 				}
                 <button id="theme-toggle" type="button" class="inline-flex items-center justify-center w-9 h-9 text-sm text-gray-500 rounded-lg bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
                     <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

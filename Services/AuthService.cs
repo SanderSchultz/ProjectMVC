@@ -59,9 +59,15 @@ namespace ProjectMVC.Services
 			}
 
 			var userClaims = await _authRepository.GetUserClaimsAsync(user);
+
 			if(!userClaims.Any(claims => claims.Type == "Name"))
 			{
 				await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name ?? "Unknown User"));
+			}
+
+			if (!userClaims.Any(claims => claims.Type == "ProfilePicture"))
+			{
+				await _authRepository.AddClaimAsync(user, new Claim("ProfilePicture", user.ProfilePicture ?? string.Empty));
 			}
 
 			await _authRepository.SignInAsync(user, false);
