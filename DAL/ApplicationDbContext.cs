@@ -20,7 +20,6 @@ namespace ProjectMVC.DAL
             base.OnModelCreating(modelBuilder);
 
 			var adminUser = new ApplicationUser { 
-				Id= "1", 
 				Email = "admin@admin.com",
 				UserName = "admin@admin.com",
 				NormalizedEmail = "ADMIN@ADMIN.COM",
@@ -32,7 +31,6 @@ namespace ProjectMVC.DAL
 
 			var janeUser = new ApplicationUser 
 			{
-				Id = "2", 
 				Email = "jane@jane.com",
 				UserName = "jane@jane.com",
 				NormalizedEmail = "JANE@JANE.COM",
@@ -44,7 +42,6 @@ namespace ProjectMVC.DAL
 
 			var patrickUser = new ApplicationUser 
 			{
-				Id = "3", 
 				Email = "patrick@patrick.com",
 				UserName = "patrick@patrick.com",
 				NormalizedEmail = "PATRICK@PATRICK.COM",
@@ -56,7 +53,6 @@ namespace ProjectMVC.DAL
 
 			var annaUser = new ApplicationUser 
 			{
-				Id = "4", 
 				Email = "anna@anna.com",
 				UserName = "anna@anna.com",
 				NormalizedEmail = "ANNA@ANNA.COM",
@@ -137,7 +133,7 @@ namespace ProjectMVC.DAL
                 new Comment
                 {
                     Id = 4,
-                    Content = "Wish i could have been there myself, where is it?",
+                    Content = "Wish I could have been there myself, where is this?",
                     PostId = 3,
                     Created = new DateTime(2024, 11, 28, 18, 24, 0),
                     UserId = annaUser.Id,

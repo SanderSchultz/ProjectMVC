@@ -44,7 +44,10 @@ namespace ProjectMVC.Services
 				return Result.Failure(string.Join(Environment.NewLine, result.Errors.Select(error => error.Description)));
 			}
 
-			await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name));
+			await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name ?? string.Empty));
+			await _authRepository.AddClaimAsync(user, new Claim("ProfilePicture", user.ProfilePicture ?? string.Empty));
+			await _authRepository.AddClaimAsync(user, new Claim("Email", user.Email ?? string.Empty));
+
 			await _authRepository.SignInAsync(user, false);
 
 			return Result.Success($"Welcome, {user.Name}!");
@@ -62,12 +65,17 @@ namespace ProjectMVC.Services
 
 			if(!userClaims.Any(claims => claims.Type == "Name"))
 			{
-				await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name ?? "Unknown User"));
+				await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name ?? string.Empty));
 			}
 
 			if (!userClaims.Any(claims => claims.Type == "ProfilePicture"))
 			{
 				await _authRepository.AddClaimAsync(user, new Claim("ProfilePicture", user.ProfilePicture ?? string.Empty));
+			}
+
+			if (!userClaims.Any(claims => claims.Type == "Email"))
+			{
+				await _authRepository.AddClaimAsync(user, new Claim("Email", user.Email ?? string.Empty));
 			}
 
 			await _authRepository.SignInAsync(user, false);

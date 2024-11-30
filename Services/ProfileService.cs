@@ -15,7 +15,7 @@ public class ProfileService : IProfileService
     public async Task<Result> GetProfile(string postId, string userId)
     {
 
-		if(string.IsNullOrEmpty(userId) || postId != userId)
+		if(string.IsNullOrEmpty(userId))
 		{
 			return Result.Failure("You need to be signed in to see your profile");
 		}

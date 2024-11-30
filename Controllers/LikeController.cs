@@ -7,10 +7,12 @@ namespace ProjectMVC.Controllers
     public class LikeController : Controller
     {
 		private readonly ILikeService _likeService;
+		private readonly ILogger _logger;
 
-        public LikeController(ILikeService likeService)
+        public LikeController(ILikeService likeService, ILogger<LikeController> logger)
         {
 			_likeService = likeService;
+			_logger = logger;
         }
 
         [HttpPost]
@@ -19,15 +21,25 @@ namespace ProjectMVC.Controllers
         {
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			var result = await _likeService.ToggleLikeAsync(postId, userId);
 
-			if(!result.Succeeded)
+			try
 			{
-				TempData["ErrorMessage"] = result.Error;
-				return RedirectToAction("Index", "Post");
-			}
+				_logger.LogError("ToggleLikeAsync called at {Time}", DateTime.UtcNow);
+				var result = await _likeService.ToggleLikeAsync(postId, userId!);
 
-			return RedirectToAction("Index", "Post");
+				if(!result.Succeeded)
+				{
+					TempData["ErrorMessage"] = result.Error;
+					return RedirectToAction("Index", "Post");
+				}
+
+				return RedirectToAction("Index", "Post");
+
+			} catch(Exception e)
+			{
+				_logger.LogError(e, "ToggleLikeAsync failed at {Time}", DateTime.UtcNow);
+				return RedirectToAction("Error", "Error");
+			}
 
         }
     }

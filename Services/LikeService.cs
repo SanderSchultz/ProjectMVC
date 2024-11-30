@@ -17,31 +17,30 @@ public class LikeService : ILikeService
     public async Task<Result> ToggleLikeAsync(int postId, string userId)
     {
 		
-        // Check if user is logged in
 		if(string.IsNullOrEmpty(userId))
 		{
 			return Result.Failure("You need to be logged in to like posts");
 		}
 
-        // Check if the post exists
+        /* Check if the post exists */
         var post = await _postRepository.GetPostByIdAsync(postId);
         if (post == null)
         {
             return Result.Failure("Post does not exist");
         }
 
-        // Check if the user has already liked the post
+        /* Check if the user has already liked the post */
         var existingLike = await _likeRepository.GetLikeAsync(postId, userId);
 
         if (existingLike != null)
         {
-            // Unlike
-            await _likeRepository.RemoveLikeAsync(existingLike);
-            post.LikesCount--;
+			/* Unlike */
+            _likeRepository.RemoveLikeAsync(existingLike);
+			post.LikesCount--;
         }
         else
         {
-            // Like
+            /* Like */
             var like = new Like
             {
                 PostId = postId,

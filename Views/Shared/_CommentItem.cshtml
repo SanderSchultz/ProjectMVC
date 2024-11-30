@@ -38,10 +38,10 @@
             <img src="@Model.ProfilePicture" alt="Pic" class="h-10 w-10 rounded-full object-cover" />
         }
 
-        <div class="flex flex-col leading-tight">
+        <div class="flex flex-col leading-tight max-w-full">
             <div>
                 <a class="mr-1 font-medium text-sm" href="/#">@Model.User</a>
-                <span class="text-gray-700 text-sm">@Model.Content</span>
+                <span class="text-gray-700 text-sm break-all">@Model.Content</span>
             </div>
             <span class="text-[0.7rem] text-gray-500 mt-[-2px]">@GetRelativeTime(Model.Created)</span>
         </div>

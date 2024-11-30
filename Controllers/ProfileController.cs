@@ -7,10 +7,12 @@ namespace ProjectMVC.Controllers
     public class ProfileController : Controller
     {
 		private readonly IProfileService _profileService;
+		private readonly ILogger _logger;
 
-        public ProfileController(IProfileService profileService)
+        public ProfileController(IProfileService profileService, ILogger<ProfileController> logger)
         {
 			_profileService = profileService;
+			_logger = logger;
         }
 
 		public IActionResult Profile()
@@ -26,12 +28,22 @@ namespace ProjectMVC.Controllers
 			return RedirectToAction("Index", "Post");
 
             var actual_userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			var result = await _profileService.GetProfile(userId, actual_userId);
 
-			if(!result.Succeeded)
+			try
 			{
-				TempData["ErrorMessage"] = result.Error;
-				return RedirectToAction("Index", "Post");
+				_logger.LogInformation("GetProfile called at {Time}", DateTime.UtcNow);
+				var result = await _profileService.GetProfile(userId, actual_userId);
+
+				if(!result.Succeeded)
+				{
+					TempData["ErrorMessage"] = result.Error;
+					return RedirectToAction("Index", "Post");
+				}
+
+			} catch(Exception e)
+			{
+				_logger.LogError(e, "GetProfile failed at {Time}", DateTime.UtcNow);
+				return RedirectToAction("Error", "Error");
 			}
 
 			return RedirectToAction("Index", "Post");

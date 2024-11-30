@@ -1,0 +1,10 @@
+<div class="mt-24 flex flex-col gap-10 pb-16">
+    <div class="flex flex-col items-center justify-center">
+        <div class="w-full max-w-md rounded-lg border-2 border-secondary p-8 shadow-2xl dark:border dark:border-primary dark:bg-secondary">
+@if (!ViewData.ModelState.IsValid)
+{
+            <h2 class="mt-4 text-center text-2xl font-semibold text-gray-800 dark:text-white">@Html.ValidationSummary(false)</h2>
+}
+        </div>
+    </div>
+</div>

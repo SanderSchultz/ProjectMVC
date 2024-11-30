@@ -12,7 +12,7 @@ public class LikeRepository : ILikeRepository
         _context = context;
     }
 
-    public async Task<Like> GetLikeAsync(int postId, string userId)
+    public async Task<Like?> GetLikeAsync(int postId, string userId)
     {
         return await _context.Likes
             .FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == userId);
@@ -23,7 +23,7 @@ public class LikeRepository : ILikeRepository
         await _context.Likes.AddAsync(like);
     }
 
-    public async Task RemoveLikeAsync(Like like)
+    public void RemoveLikeAsync(Like like)
     {
         _context.Likes.Remove(like);
     }

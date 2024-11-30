@@ -18,6 +18,7 @@ namespace ProjectMVC.Services
 
 		public async Task<List<PostDto>> GetAllPostsAsync(string currentUserId, bool isAdmin)
 		{
+
 			// Fetch raw posts from the repository
 			var posts = await _postRepository.GetAllPostsAsync();
 

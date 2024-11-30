@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using ProjectMVC.DTO;
 using ProjectMVC.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 [Authorize]
 public class PostController : Controller
 {
     private readonly IPostService _postService;
+    private readonly ILogger<PostController> _logger;
 
-    public PostController(IPostService postService)
+    public PostController(IPostService postService, ILogger<PostController> logger)
     {
         _postService = postService;
+		_logger = logger;
     }
 
 	[AllowAnonymous]
@@ -28,12 +31,23 @@ public class PostController : Controller
 			ModelState.AddModelError(string.Empty, ViewBag.ErrorMessage.ToString());
 		}
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var isAdmin = User.IsInRole("Admin");
+        var userId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        var isAdmin = User?.IsInRole("Admin") ?? false;
 
-        var posts = await _postService.GetAllPostsAsync(userId, isAdmin);
+		try
+		{
+			_logger.LogInformation("GetAllPostsAsync called at {Time}", DateTime.UtcNow);
+			var posts = await _postService.GetAllPostsAsync(userId!, isAdmin);
+			return View(posts);
 
-        return View(posts);
+		} catch (Exception e)
+		{
+
+			_logger.LogError(e, "GetAllPostsAsync failed at {Time}", DateTime.UtcNow);
+			return RedirectToAction("Error", "Error");
+
+		}
+
     }
 
     [HttpPost]
@@ -47,16 +61,28 @@ public class PostController : Controller
 		}
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var result = await _postService.CreatePostAsync(dto, userId);
 
-		if(!result.Succeeded)
+		try
 		{
-			TempData["ErrorMessage"] = result.Error;
-			return RedirectToAction(nameof(Index));
-		}
+			_logger.LogInformation("CreatePostAsync called at {Time}", DateTime.UtcNow);
+			var result = await _postService.CreatePostAsync(dto, userId!);
 
-		TempData["SuccessMessage"] = result.SuccessMessage;
-        return RedirectToAction(nameof(Index));
+			if(!result.Succeeded)
+			{
+				TempData["ErrorMessage"] = result.Error;
+				return RedirectToAction(nameof(Index));
+			}
+
+			TempData["SuccessMessage"] = result.SuccessMessage;
+			return RedirectToAction(nameof(Index));
+
+		} catch (Exception e)
+		{
+
+			_logger.LogError(e, "CreatePostAsync failed at {Time}", DateTime.UtcNow);
+			return RedirectToAction("Error", "Error");
+
+		}
     }
 
     [HttpPost]
@@ -71,16 +97,26 @@ public class PostController : Controller
 		}
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var result = await _postService.UpdatePostAsync(id, dto, userId);
 
-		if(!result.Succeeded)
+		try
 		{
-			TempData["ErrorMessage"] = result.Error;
-			return RedirectToAction(nameof(Index));
-		}
+			_logger.LogInformation("UpdatePostAsync called at {Time}", DateTime.UtcNow);
+			var result = await _postService.UpdatePostAsync(id, dto, userId!);
 
-		TempData["SuccessMessage"] = result.SuccessMessage;
-        return RedirectToAction(nameof(Index));
+			if(!result.Succeeded)
+			{
+				TempData["ErrorMessage"] = result.Error;
+				return RedirectToAction(nameof(Index));
+			}
+
+			TempData["SuccessMessage"] = result.SuccessMessage;
+			return RedirectToAction(nameof(Index));
+
+		} catch (Exception e)
+		{
+			_logger.LogError(e, "UpdatePostAsync failed at {Time}", DateTime.UtcNow);
+			return RedirectToAction("Error", "Error");
+		}
     }
 
 	[HttpPost]
@@ -89,16 +125,26 @@ public class PostController : Controller
 	public async Task<IActionResult> Delete(int id)
 	{
 		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-		var result = await _postService.DeletePostAsync(id, userId);
 
-		if(!result.Succeeded)
+		try
 		{
-			TempData["ErrorMessage"] = result.Error;
-			return RedirectToAction(nameof(Index));
-		}
+			_logger.LogInformation("DeletePostAsync called at {Time}", DateTime.UtcNow);
+			var result = await _postService.DeletePostAsync(id, userId!);
 
-		TempData["SuccessMessage"] = result.SuccessMessage;
-		return RedirectToAction(nameof(Index));
+			if(!result.Succeeded)
+			{
+				TempData["ErrorMessage"] = result.Error;
+				return RedirectToAction(nameof(Index));
+			}
+
+			TempData["SuccessMessage"] = result.SuccessMessage;
+			return RedirectToAction(nameof(Index));
+
+		} catch (Exception e)
+		{
+			_logger.LogError(e, "DeletePostAsync failed at {Time}", DateTime.UtcNow);
+			return RedirectToAction("Error", "Error");
+		}
 	}
 
 }

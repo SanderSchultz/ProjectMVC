@@ -82,7 +82,6 @@ app.UseStaticFiles(new StaticFileOptions
         ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=1800");
     }
 });
-// app.UseStaticFiles();
 
 app.UseRouting();
 

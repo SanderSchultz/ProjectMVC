@@ -7,10 +7,12 @@ using ProjectMVC.Services.Interfaces;
 public class CommentController : Controller
 {
 	private readonly ICommentService _commentService;
+	private readonly ILogger _logger;
 
-	public CommentController(ICommentService commentService)
+	public CommentController(ICommentService commentService, ILogger<CommentController> logger)
 	{
 		_commentService = commentService;
+		_logger = logger;
 	}
 
 	[HttpPost]
@@ -25,9 +27,19 @@ public class CommentController : Controller
 		}
 
 		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-		await _commentService.CreateCommentAsync(postId, content, userId);
 
-		return RedirectToAction("Index", "Post");
+		try
+		{
+			_logger.LogInformation("CreateCommentAsync called at {Time}", DateTime.UtcNow);
+			await _commentService.CreateCommentAsync(postId, content, userId!);
+
+			return RedirectToAction("Index", "Post");
+
+		} catch(Exception e)
+		{
+			_logger.LogError(e, "CreateCommentAsync failed at {Time}", DateTime.UtcNow);
+			return RedirectToAction("Error", "Error");
+		}
 
 	}
 
@@ -36,14 +48,24 @@ public class CommentController : Controller
 	public async Task<IActionResult> Delete(int id)
 	{
 		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-		var result = await _commentService.DeleteCommentAsync(id, userId);
-
-		if(!result.Succeeded)
+		
+		try
 		{
-			TempData["ErrorMessage"] = result.Error;
-			return RedirectToAction("Index", "Post");
-		}
+			_logger.LogInformation("DeleteCommentAsync called at {Time}", DateTime.UtcNow);
+			var result = await _commentService.DeleteCommentAsync(id, userId!);
 
-		return RedirectToAction("Index", "Post");
+			if(!result.Succeeded)
+			{
+				TempData["ErrorMessage"] = result.Error;
+				return RedirectToAction("Index", "Post");
+			}
+
+			return RedirectToAction("Index", "Post");
+
+		} catch(Exception e)
+		{
+			_logger.LogError(e, "DeleteCommentAsync failed at {Time}", DateTime.UtcNow);
+			return RedirectToAction("Error", "Error");
+		}
 	}
 }

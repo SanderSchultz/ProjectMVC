@@ -16,6 +16,7 @@ run_command() {
 }
 
 rebase(){
+
 	rm -rf Migrations
 
 	rm ProjectMVC.db
@@ -34,7 +35,6 @@ CHOICE=$(gum choose --header "Do you want to run the frontend or backend?" --ite
 case $CHOICE in
     "Frontend")
         tmux send-keys "npx tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/output.css --watch" C-m
-        # run_command "dotnet watch --no-hot-reload"
         run_command "dotnet watch"
         ;;
 	"Rebuild")
