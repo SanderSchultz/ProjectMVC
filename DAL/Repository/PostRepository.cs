@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectMVC.DAL.Entities;
-using ProjectMVC.DAL;
 using ProjectMVC.DAL.Repository.Interfaces;
 
-namespace ProjectMVC.Repository
+namespace ProjectMVC.DAL.Repository
 {
 
 public class PostRepository : IPostRepository

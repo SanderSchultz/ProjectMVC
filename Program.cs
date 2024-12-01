@@ -5,7 +5,6 @@ using ProjectMVC.DAL.Entities;
 using ProjectMVC.DAL.Repository.Interfaces;
 using ProjectMVC.Services;
 using ProjectMVC.Services.Interfaces;
-using ProjectMVC.Repository;
 using ProjectMVC.DAL;
 using System.Security.Claims;
 
