@@ -50,7 +50,7 @@
             <span class="text-[0.7rem] text-gray-500 mt-[-2px]">@GetRelativeTime(Model.Created)</span>
         </div>
     </div>
-    @if(User.Identity.IsAuthenticated && Model.CanEdit)
+    @if(User.Identity!.IsAuthenticated && Model!.CanEdit)
     {
         <form asp-controller="Comment" asp-action="Delete" method="post">
             <input type="hidden" name="id" value="@Model.Id" />

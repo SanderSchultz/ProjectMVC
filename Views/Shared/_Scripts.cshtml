@@ -1,5 +1,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+
     // Dropdown Logic
     const dropdowns = document.querySelectorAll('.relative.inline-block');
 
@@ -41,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const titleInput = document.getElementById("title");
 
     if (editPostButton && cancelPostButton && form && overlay) {
-        // Add click event listener to each edit post button
         editPostButton.forEach(button => {
             button.addEventListener('click', function(){
                 const postId = this.getAttribute("data-id");
@@ -56,14 +56,12 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // Add event listener to cancel button
         cancelPostButton.addEventListener("click", function () {
             document.body.classList.remove('overflow-hidden');
             form.classList.add("hidden");
             overlay.classList.add("hidden");
         });
 
-        // Add event listener to overlay
         overlay.addEventListener("click", function () {
             document.body.classList.remove('overflow-hidden');
             form.classList.add("hidden");
@@ -79,21 +77,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const overlaycomment = post.querySelector(".overlay-comment");
 
         if (commentPostButton && cancelCommentPostButton && formcomment && overlaycomment) {
-            // Add click event listener to the "Post Comment" button
             commentPostButton.addEventListener('click', function () {
                 document.body.classList.add('overflow-hidden');
                 formcomment.classList.toggle("hidden");
                 overlaycomment.classList.toggle("hidden");
             });
 
-            // Add click event listener to the "Cancel" button
             cancelCommentPostButton.addEventListener("click", function () {
                 document.body.classList.remove('overflow-hidden');
                 formcomment.classList.add("hidden");
                 overlaycomment.classList.add("hidden");
             });
 
-            // Add click event listener to the overlay
             overlaycomment.addEventListener("click", function () {
                 document.body.classList.remove('overflow-hidden');
                 formcomment.classList.add("hidden");

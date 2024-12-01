@@ -1,10 +1,36 @@
-<button class="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-green-500 hover:bg-green-100">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="18" cy="5" r="3"></circle>
-        <circle cx="6" cy="12" r="3"></circle>
-        <circle cx="18" cy="19" r="3"></circle>
-        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-    </svg>
-    <span class="text-sm">Share</span>
-</button>
+<div class="relative">
+    <button id="shareButton" class="bg-transparent border-none cursor-pointer p-2 rounded-lg transition-colors duration-300 flex items-center text-green-500 hover:bg-green-100">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+        <span class="text-sm">Share</span>
+    </button>
+    <div id="copyMessage" class="absolute top-full left-0 mt-2 p-2 bg-green-100 text-green-800 rounded-md text-sm hidden">
+        Copied to clipboard!
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var shareButton = document.getElementById('shareButton');
+        var copyMessage = document.getElementById('copyMessage');
+
+        shareButton.addEventListener('click', function() {
+            var shareUrl = '@Url.Action("Index", null, null, Context.Request.Scheme)';
+
+            navigator.clipboard.writeText(shareUrl).then(function() {
+                copyMessage.classList.remove('hidden');
+
+                setTimeout(function() {
+                    copyMessage.classList.add('hidden');
+                }, 1500);
+            }).catch(function(err) {
+                console.error('Failed to copy: ', err);
+            });
+        });
+    });
+</script>

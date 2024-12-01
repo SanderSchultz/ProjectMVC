@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using ProjectMVC.DTO;
 using ProjectMVC.Services.Interfaces;
 
 namespace ProjectMVC.Controllers
@@ -15,38 +15,62 @@ namespace ProjectMVC.Controllers
 			_logger = logger;
         }
 
-		public IActionResult Profile()
+		public async Task<IActionResult> Profile()
 		{
-			return View();
+
+			ViewBag.SuccessMessage = TempData["SuccessMessage"];
+			ViewBag.MessageType = TempData["MessageType"];
+
+			ViewBag.ErrorMessage = TempData["ErrorMessage"];
+
+			if(ViewBag.ErrorMessage != null)
+			{
+				ModelState.AddModelError(string.Empty, ViewBag.ErrorMessage.ToString());
+			}
+
+			try
+			{
+				_logger.LogInformation("Profile called at {Time}", DateTime.UtcNow);
+				var result = await _profileService.GetUserAsync();
+
+				return View(result);
+
+			} catch(Exception e)
+			{
+				_logger.LogError(e, "Profile failed at {Time}", DateTime.UtcNow);
+				return RedirectToAction("Error", "Error");
+			}
+
 		}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string userId)
+        public async Task<IActionResult> EditProfile(UserDto dto)
         {
 
-			return RedirectToAction("Index", "Post");
-
-            var actual_userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			ModelState.Remove(nameof(UserDto.Password));
+			ModelState.Remove(nameof(UserDto.ConfirmPassword));
 
 			try
 			{
-				_logger.LogInformation("GetProfile called at {Time}", DateTime.UtcNow);
-				var result = await _profileService.GetProfile(userId, actual_userId);
+				_logger.LogInformation("EditProfile called at {Time}", DateTime.UtcNow);
+				var result = await _profileService.UpdateProfile(dto);
 
 				if(!result.Succeeded)
 				{
 					TempData["ErrorMessage"] = result.Error;
-					return RedirectToAction("Index", "Post");
+					return RedirectToAction(nameof(Profile));
 				}
+
+				TempData["SuccessMessage"] = result.SuccessMessage;
+				return RedirectToAction(nameof(Profile));
 
 			} catch(Exception e)
 			{
-				_logger.LogError(e, "GetProfile failed at {Time}", DateTime.UtcNow);
+				_logger.LogError(e, "EditProfile failed at {Time}", DateTime.UtcNow);
 				return RedirectToAction("Error", "Error");
 			}
 
-			return RedirectToAction("Index", "Post");
 
         }
     }

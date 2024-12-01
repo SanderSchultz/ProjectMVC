@@ -28,11 +28,17 @@ namespace ProjectMVC.Services
 				return Result.Failure("Post no longer exist");
 			}
 
-			var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var user = _httpContextAccessor.HttpContext?.User;
+			var userId = user?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			if(user == null)
+			{
+				return Result.Failure("You need to be signed in to add comments");
+			}
 
 			if(userId == null)
 			{
-				return Result.Failure("You need to be signed in to add comments");
+				return Result.Failure("Missing claims, please relog");
 			}
 
             var newComment = new Comment

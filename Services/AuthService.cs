@@ -10,10 +10,12 @@ namespace ProjectMVC.Services
 	public class AuthService : IAuthService
 	{
 		private readonly IAuthRepository _authRepository;
+		private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public AuthService(IAuthRepository authRepository)
+		public AuthService(IAuthRepository authRepository, IHttpContextAccessor httpContextAccessor)
 		{
 			_authRepository = authRepository;
+			_httpContextAccessor = httpContextAccessor;
 		}
 
 		public async Task<Result> RegisterUserAsync(UserDto userDto)
@@ -44,9 +46,8 @@ namespace ProjectMVC.Services
 				return Result.Failure(string.Join(Environment.NewLine, result.Errors.Select(error => error.Description)));
 			}
 
-			await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name ?? string.Empty));
-			await _authRepository.AddClaimAsync(user, new Claim("ProfilePicture", user.ProfilePicture ?? string.Empty));
 			await _authRepository.AddClaimAsync(user, new Claim("Email", user.Email ?? string.Empty));
+			await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name ?? string.Empty));
 
 			await _authRepository.SignInAsync(user, false);
 
@@ -61,23 +62,8 @@ namespace ProjectMVC.Services
 				return Result.Failure("Invalid email or password");
 			}
 
-			var userClaims = await _authRepository.GetUserClaimsAsync(user);
-
-			if(!userClaims.Any(claims => claims.Type == "Name"))
-			{
-				await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name ?? string.Empty));
-			}
-
-			if (!userClaims.Any(claims => claims.Type == "ProfilePicture"))
-			{
-				await _authRepository.AddClaimAsync(user, new Claim("ProfilePicture", user.ProfilePicture ?? string.Empty));
-			}
-
-			if (!userClaims.Any(claims => claims.Type == "Email"))
-			{
-				await _authRepository.AddClaimAsync(user, new Claim("Email", user.Email ?? string.Empty));
-			}
-
+			await _authRepository.AddClaimAsync(user, new Claim("Email", user.Email ?? string.Empty));
+			await _authRepository.AddClaimAsync(user, new Claim("Name", user.Name ?? string.Empty));
 			await _authRepository.SignInAsync(user, false);
 
 			return Result.Success($"Welcome, {user.Name}!");
@@ -88,5 +74,6 @@ namespace ProjectMVC.Services
 			await _authRepository.SignOutAsync();
 			return Result.Success("You have been successfully logged out");
 		}
+
 	}
 }

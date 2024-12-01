@@ -30,7 +30,6 @@ namespace ProjectMVC.Services
 			var user = _httpContextAccessor.HttpContext?.User;
 			var userId = user?.FindFirstValue(ClaimTypes.NameIdentifier);
 
-			// Fetch raw posts from the repository
 			var posts = await _postRepository.GetAllPostsAsync();
 
 			var adminCheck = user != null 
@@ -38,14 +37,11 @@ namespace ProjectMVC.Services
 				: AuthorizationResult.Failed();
 
 			var isAdmin = adminCheck.Succeeded;
-			
-			_logger.LogInformation("Admin check result: {IsAdmin}", isAdmin);
 
 			var likedPostIds = userId != null
 				? await _postRepository.GetLikedPostIdsAsync(userId)
 				: new List<int>();
 
-			// Map to DTOs and apply business logic
 			return posts.Select(post => new PostDto
 			{
 				Id = post.Id,
@@ -94,7 +90,7 @@ namespace ProjectMVC.Services
 				var fileName = Guid.NewGuid() + Path.GetExtension(dto.ImageFile.FileName);
 				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
 
-				Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+				Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
 				using (var stream = new FileStream(filePath, FileMode.Create))
 				{
@@ -119,6 +115,11 @@ namespace ProjectMVC.Services
 		public async Task<Result> UpdatePostAsync(int id, PostUpdateDto dto)
 		{
 
+			if ((dto.ImageFile == null || dto.ImageFile.Length == 0) && string.IsNullOrEmpty(dto.Title))
+			{
+				return Result.Failure("You need to choose either a Picture or a Title to update post");
+			}
+
 			var post = await _postRepository.GetPostByIdAsync(id);
 			if (post == null)
 			{
@@ -140,17 +141,12 @@ namespace ProjectMVC.Services
 				if (File.Exists(deletefilePath))
 				{
 					File.Delete(deletefilePath);
-					Console.WriteLine($"Deleted image: {deletefilePath}");
-				}
-				else
-				{
-					Console.WriteLine($"Image not found: {deletefilePath}");
 				}
 
 				var fileName = Guid.NewGuid() + Path.GetExtension(dto.ImageFile.FileName);
 				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
 
-				Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+				Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
 				using (var stream = new FileStream(filePath, FileMode.Create))
 				{
@@ -198,14 +194,8 @@ namespace ProjectMVC.Services
 				if (File.Exists(filePath))
 				{
 					File.Delete(filePath);
-					Console.WriteLine($"Deleted image: {filePath}");
-				}
-				else
-				{
-					Console.WriteLine($"Image not found: {filePath}");
 				}
 			}
-
 
 			await _postRepository.DeletePostAsync(post);
 			return Result.Success("Post deleted successfully");

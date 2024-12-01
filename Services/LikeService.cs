@@ -2,45 +2,44 @@ using ProjectMVC.Models;
 using ProjectMVC.DAL.Entities;
 using ProjectMVC.DAL.Repository.Interfaces;
 using ProjectMVC.Services.Interfaces;
+using System.Security.Claims;
 
 public class LikeService : ILikeService
 {
     private readonly ILikeRepository _likeRepository;
     private readonly IPostRepository _postRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public LikeService(ILikeRepository likeRepository, IPostRepository postRepository)
+    public LikeService(ILikeRepository likeRepository, IPostRepository postRepository, IHttpContextAccessor httpContextAccessor)
     {
         _likeRepository = likeRepository;
         _postRepository = postRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Result> ToggleLikeAsync(int postId, string userId)
     {
-		
-		if(string.IsNullOrEmpty(userId))
+
+		if(userId == null)
 		{
 			return Result.Failure("You need to be logged in to like posts");
 		}
 
-        /* Check if the post exists */
         var post = await _postRepository.GetPostByIdAsync(postId);
         if (post == null)
         {
             return Result.Failure("Post does not exist");
         }
 
-        /* Check if the user has already liked the post */
         var existingLike = await _likeRepository.GetLikeAsync(postId, userId);
 
         if (existingLike != null)
         {
-			/* Unlike */
             _likeRepository.RemoveLikeAsync(existingLike);
 			post.LikesCount--;
         }
         else
         {
-            /* Like */
             var like = new Like
             {
                 PostId = postId,

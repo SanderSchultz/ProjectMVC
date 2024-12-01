@@ -25,9 +25,6 @@ namespace ProjectMVC.DAL.Repository
 		public async Task AddClaimAsync(ApplicationUser user, Claim claim) =>
 			await _userManager.AddClaimAsync(user, claim);
 
-		public async Task<IList<Claim>> GetUserClaimsAsync(ApplicationUser user) =>
-			await _userManager.GetClaimsAsync(user);
-
 		public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password) =>
 			await _userManager.CheckPasswordAsync(user, password);
 
@@ -36,5 +33,6 @@ namespace ProjectMVC.DAL.Repository
 
 		public async Task SignOutAsync() =>
 			await _signInManager.SignOutAsync();
+
 	}
 }

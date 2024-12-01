@@ -1,9 +1,12 @@
 using ProjectMVC.Models;
+using ProjectMVC.DTO;
+using ProjectMVC.DAL.Entities;
 
 namespace ProjectMVC.Services.Interfaces
 {
 	public interface IProfileService
 	{
-		Task<Result> GetProfile(string userId, string actual_userId);
+		Task<Result> UpdateProfile(UserDto dto);
+		Task<UserDto> GetUserAsync();
 	}
 }

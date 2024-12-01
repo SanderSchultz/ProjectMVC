@@ -15,10 +15,8 @@ namespace ProjectMVC.Controllers
 			_logger = logger;
         }
 
-		/* Returns the main View filled with empty userDto */
 		public IActionResult Register() => View(new UserDto());
 
-		/* Resisters a user */
         [HttpPost]
         public async Task<IActionResult> Register(UserDto dto)
         {
@@ -49,14 +47,12 @@ namespace ProjectMVC.Controllers
 			}
         }
 
-		/* Returns the main View filled with empty LoginDto */
 		public IActionResult Login() => View(new LoginDto
 											{
 											Email = "",
 											Password = ""
 											});
 
-		/* Logs in user */
         [HttpPost]
         public async Task<IActionResult> Login(LoginDto dto)
         {
@@ -76,7 +72,6 @@ namespace ProjectMVC.Controllers
 					return View(dto);
 				}
 
-				/* If we log in, we return a message from the Service */
 				TempData["SuccessMessage"] = result.SuccessMessage;
 				TempData["MessageType"] = "login";
 				return RedirectToAction("Index", "Post");
@@ -88,7 +83,6 @@ namespace ProjectMVC.Controllers
 			}
         }
 
-		/* Logs out user */
         [HttpPost]
         public async Task<IActionResult> Logout()
         {

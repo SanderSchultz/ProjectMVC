@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using ProjectMVC.DTO;
 using ProjectMVC.Services.Interfaces;
 
@@ -83,11 +82,6 @@ public class PostController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, PostUpdateDto dto)
     {
-		if ((dto.ImageFile == null || dto.ImageFile.Length == 0) && string.IsNullOrEmpty(dto.Title))
-		{
-			TempData["ErrorMessage"] = "You need to choose either a Picture or a Title to update post";
-			return RedirectToAction(nameof(Index));
-		}
 
 		try
 		{

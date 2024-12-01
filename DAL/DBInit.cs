@@ -11,7 +11,6 @@ namespace ProjectMVC.DAL
 
 			var hasher = new PasswordHasher<ApplicationUser>();
 
-			// Create the Admin role
 			var adminRole = new IdentityRole
 			{
 				Id = Guid.NewGuid().ToString(),
@@ -32,7 +31,6 @@ namespace ProjectMVC.DAL
 
 			adminUser.PasswordHash = hasher.HashPassword(adminUser, "admin");
 
-			// Associate the user with the Admin role
 			var adminUserRole = new IdentityUserRole<string>
 			{
 				UserId = adminUser.Id,
@@ -113,7 +111,6 @@ namespace ProjectMVC.DAL
                 }
             );
 
-            // Seed initial data for Comments
             modelBuilder.Entity<Comment>().HasData(
                 new Comment
                 {

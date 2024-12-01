@@ -42,7 +42,7 @@
                     @await Html.PartialAsync("_LikeButton", Model)
                     @await Html.PartialAsync("_DownloadButton", Model)
                     @await Html.PartialAsync("_ShareButton")
-                    @if(User.Identity.IsAuthenticated && Model.CanChangePost)
+                    @if(User.Identity!.IsAuthenticated && Model!.CanChangePost)
                     {
                         @await Html.PartialAsync("_EditDeleteDropdown", Model)
                     }

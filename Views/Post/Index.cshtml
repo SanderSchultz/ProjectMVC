@@ -1,6 +1,7 @@
 ﻿
 <script>
 
+	// Keep scroll position on refresh
     window.addEventListener("beforeunload", function () {
         localStorage.setItem("scrollPosition", window.scrollY);
     });
