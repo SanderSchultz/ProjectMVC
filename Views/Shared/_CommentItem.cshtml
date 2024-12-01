@@ -13,8 +13,12 @@
             return $"{(int)timeSpan.TotalHours} hour ago";
         if (timeSpan.TotalHours < 24)
             return $"{(int)timeSpan.TotalHours} hours ago";
+        if (timeSpan.TotalDays < 2)
+            return $"{(int)timeSpan.TotalDays} day ago";
         if (timeSpan.TotalDays < 7)
             return $"{(int)timeSpan.TotalDays} days ago";
+        if (timeSpan.TotalDays < 14)
+            return $"{(int)(timeSpan.TotalDays / 7)} week ago";
         if (timeSpan.TotalDays < 30)
             return $"{(int)(timeSpan.TotalDays / 7)} weeks ago";
         if (timeSpan.TotalDays < 365)

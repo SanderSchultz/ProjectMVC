@@ -3,6 +3,8 @@ using ProjectMVC.DAL.Repository.Interfaces;
 using ProjectMVC.Services.Interfaces;
 using ProjectMVC.DTO;
 using ProjectMVC.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectMVC.Services
 {
@@ -10,19 +12,38 @@ namespace ProjectMVC.Services
 	public class PostService : IPostService
 	{
 		private readonly IPostRepository _postRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly ILogger<PostService> _logger;
 
-		public PostService(IPostRepository postRepository)
+		public PostService(IPostRepository postRepository, IHttpContextAccessor httpContextAccessor, IAuthorizationService authorizationService, ILogger<PostService> logger)
 		{
 			_postRepository = postRepository;
+			_httpContextAccessor = httpContextAccessor;
+			_authorizationService = authorizationService;
+			_logger = logger;
 		}
 
-		public async Task<List<PostDto>> GetAllPostsAsync(string currentUserId, bool isAdmin)
+		public async Task<List<PostDto>> GetAllPostsAsync()
 		{
+
+			var user = _httpContextAccessor.HttpContext?.User;
+			var userId = user?.FindFirstValue(ClaimTypes.NameIdentifier);
 
 			// Fetch raw posts from the repository
 			var posts = await _postRepository.GetAllPostsAsync();
 
-			var likedPostIds = await _postRepository.GetLikedPostIdsAsync(currentUserId);
+			var adminCheck = user != null 
+				? await _authorizationService.AuthorizeAsync(user, null, "CanEdit")
+				: AuthorizationResult.Failed();
+
+			var isAdmin = adminCheck.Succeeded;
+			
+			_logger.LogInformation("Admin check result: {IsAdmin}", isAdmin);
+
+			var likedPostIds = userId != null
+				? await _postRepository.GetLikedPostIdsAsync(userId)
+				: new List<int>();
 
 			// Map to DTOs and apply business logic
 			return posts.Select(post => new PostDto
@@ -34,7 +55,7 @@ namespace ProjectMVC.Services
 				Created = post.Created,
 				User = post.User.Name,
 				ProfilePicture = post.User.ProfilePicture,
-				CanChangePost = isAdmin || post.User.Id == currentUserId,
+				CanChangePost = isAdmin || post.User.Id == userId,
 				IsLikedByUser = likedPostIds.Contains(post.Id),
 				Comments = post.Comments
 					.OrderBy(c => c.Created)
@@ -44,17 +65,26 @@ namespace ProjectMVC.Services
 						User = c.User.Name,
 						ProfilePicture = c.User.ProfilePicture,
 						Content = c.Content,
-						CanEdit = c.User.Id == currentUserId,
+						CanEdit = isAdmin || c.User.Id == userId,
 						Created = c.Created
 					}).ToList()
 			}).ToList();
 		}
 
-		public async Task<Result> CreatePostAsync(PostCreateDto dto, string userId)
+		public async Task<Result> CreatePostAsync(PostCreateDto dto)
 		{
-			if(string.IsNullOrEmpty(userId))
+
+			var user = _httpContextAccessor.HttpContext?.User;
+			var userId = user?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			if(user == null)
 			{
 				return Result.Failure("You need to be logged in to create posts");
+			}
+
+			if(userId == null)
+			{
+				return Result.Failure("Missing claims, please relog");
 			}
 
 			string imagePath = string.Empty;
@@ -86,11 +116,17 @@ namespace ProjectMVC.Services
 			return Result.Success("Post created successfully");
 		}
 
-		public async Task<Result> UpdatePostAsync(int id, PostUpdateDto dto, string userId)
+		public async Task<Result> UpdatePostAsync(int id, PostUpdateDto dto)
 		{
 
 			var post = await _postRepository.GetPostByIdAsync(id);
-			if (post == null || post.UserId != userId)
+			if (post == null)
+			{
+				return Result.Failure("Post does not exist");
+			}
+
+			var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if(post.UserId != userId)
 			{
 				return Result.Failure("You are not authorized to edit this post");
 			}
@@ -134,10 +170,24 @@ namespace ProjectMVC.Services
 			return Result.Success("Post edited successfully");
 		}
 
-		public async Task<Result> DeletePostAsync(int id, string userId)
+		public async Task<Result> DeletePostAsync(int id)
 		{
 			var post = await _postRepository.GetPostByIdAsync(id);
-			if (post == null || post.UserId != userId)
+			if (post == null)
+			{
+				return Result.Failure("Post does not exist");
+			}
+
+			var user = _httpContextAccessor.HttpContext?.User;
+			var userId = user?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			var adminCheck = user != null 
+				? await _authorizationService.AuthorizeAsync(user, post, "CanEdit")
+				: AuthorizationResult.Failed();
+
+			var isAdmin = adminCheck.Succeeded;
+
+			if(post.UserId != userId && !isAdmin)
 			{
 				return Result.Failure("You are not authorized to delete this post");
 			}

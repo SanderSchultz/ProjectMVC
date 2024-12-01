@@ -26,19 +26,29 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddRazorPages();
 
-//Implements role for who can edit posts, admins or owner of post
+//Implements role for who can edit posts and comments (admins or owners)
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("CanEditPost", policy =>
+    options.AddPolicy("CanEdit", policy =>
         policy.RequireAssertion(context =>
         {
             var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if(context.Resource == null)
+			{
+				return context.User.IsInRole("Admin");
+			}
+
             if (context.Resource is Post post)
             {
                 return context.User.IsInRole("Admin") || post.UserId == userId;
             }
-            // If context.Resource is not set, allow the action and let the service handle authorization
-            return true;
+
+            if (context.Resource is Comment comment)
+            {
+                return context.User.IsInRole("Admin") || comment.UserId == userId;
+            }
+
+            return false;
         }));
 });
 

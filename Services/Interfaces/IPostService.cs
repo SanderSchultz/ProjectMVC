@@ -5,9 +5,9 @@ namespace ProjectMVC.Services.Interfaces
 {
 public interface IPostService
 	{
-		Task<List<PostDto>> GetAllPostsAsync(string currentUserId, bool isAdmin);
-		Task<Result> CreatePostAsync(PostCreateDto dto, string userId);
-		Task<Result> UpdatePostAsync(int id, PostUpdateDto dto, string userId);
-		Task<Result> DeletePostAsync(int id, string userId);
+		Task<List<PostDto>> GetAllPostsAsync();
+		Task<Result> CreatePostAsync(PostCreateDto dto);
+		Task<Result> UpdatePostAsync(int id, PostUpdateDto dto);
+		Task<Result> DeletePostAsync(int id);
 	}
 }

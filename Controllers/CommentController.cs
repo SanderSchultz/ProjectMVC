@@ -26,12 +26,11 @@ public class CommentController : Controller
 			return RedirectToAction("Index", "Post");
 		}
 
-		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
 		try
 		{
 			_logger.LogInformation("CreateCommentAsync called at {Time}", DateTime.UtcNow);
-			await _commentService.CreateCommentAsync(postId, content, userId!);
+
+			await _commentService.CreateCommentAsync(postId, content);
 
 			return RedirectToAction("Index", "Post");
 
@@ -47,12 +46,11 @@ public class CommentController : Controller
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Delete(int id)
 	{
-		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		
 		try
 		{
 			_logger.LogInformation("DeleteCommentAsync called at {Time}", DateTime.UtcNow);
-			var result = await _commentService.DeleteCommentAsync(id, userId!);
+			var result = await _commentService.DeleteCommentAsync(id);
 
 			if(!result.Succeeded)
 			{

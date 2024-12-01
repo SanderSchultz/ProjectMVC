@@ -94,7 +94,7 @@ namespace ProjectMVC.Controllers
         {
 			try{
 
-				_logger.LogError("LogoutUserAsync called at {Time}", DateTime.UtcNow);
+				_logger.LogInformation("LogoutUserAsync called at {Time}", DateTime.UtcNow);
 				var result = await _authService.LogoutUserAsync();
 
 				TempData["SuccessMessage"] = result.SuccessMessage;

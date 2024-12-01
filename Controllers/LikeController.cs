@@ -24,7 +24,7 @@ namespace ProjectMVC.Controllers
 
 			try
 			{
-				_logger.LogError("ToggleLikeAsync called at {Time}", DateTime.UtcNow);
+				_logger.LogInformation("ToggleLikeAsync called at {Time}", DateTime.UtcNow);
 				var result = await _likeService.ToggleLikeAsync(postId, userId!);
 
 				if(!result.Succeeded)

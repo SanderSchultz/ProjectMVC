@@ -1,12 +1,20 @@
+@{
+	var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+}
 <div class="relative">
 <nav class="bg-white dark:bg-gray-800">
     <div class="container mx-auto">
         <div class="flex flex-row items-center justify-between py-4">
-
             <div class="flex flex-row items-center justify-center gap-4">
-                <a asp-controller="Post" asp-action="Index" class="text-2xl font-bold text-gray-900 dark:text-white">
-                    <h1 class="text-center">Social Media</h1>
-                </a>
+				@if(currentController != "Post"){
+					<a asp-controller="Post" asp-action="Index" class="text-2xl font-bold text-gray-900 dark:text-white">
+						<h1 class="text-center">Social Media</h1>
+					</a>
+				} else {
+					<a href="#" class="text-2xl font-bold text-gray-900 dark:text-white">
+						<h1 class="text-center">Social Media</h1>
+					</a>
+				}
 
 				@if(User.Identity.IsAuthenticated)
 				{
@@ -115,4 +123,5 @@ overlay.addEventListener("click", function () {
     form.classList.add("hidden");
     overlay.classList.add("hidden");
 });
+
 </script>

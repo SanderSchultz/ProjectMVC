@@ -4,7 +4,7 @@ namespace ProjectMVC.Services.Interfaces
 {
     public interface ICommentService
     {
-        Task<Result> CreateCommentAsync(int postId, string content, string userId);
-        Task<Result> DeleteCommentAsync(int id, string userId);
+        Task<Result> CreateCommentAsync(int postId, string content);
+        Task<Result> DeleteCommentAsync(int id);
     }
 }

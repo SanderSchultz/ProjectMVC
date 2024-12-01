@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using ProjectMVC.DTO;
 using ProjectMVC.Services.Interfaces;
-using Microsoft.Extensions.Logging;
 
 [Authorize]
 public class PostController : Controller
@@ -31,13 +30,10 @@ public class PostController : Controller
 			ModelState.AddModelError(string.Empty, ViewBag.ErrorMessage.ToString());
 		}
 
-        var userId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
-        var isAdmin = User?.IsInRole("Admin") ?? false;
-
 		try
 		{
 			_logger.LogInformation("GetAllPostsAsync called at {Time}", DateTime.UtcNow);
-			var posts = await _postService.GetAllPostsAsync(userId!, isAdmin);
+			var posts = await _postService.GetAllPostsAsync();
 			return View(posts);
 
 		} catch (Exception e)
@@ -60,12 +56,10 @@ public class PostController : Controller
 			return RedirectToAction(nameof(Index));
 		}
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
 		try
 		{
 			_logger.LogInformation("CreatePostAsync called at {Time}", DateTime.UtcNow);
-			var result = await _postService.CreatePostAsync(dto, userId!);
+			var result = await _postService.CreatePostAsync(dto);
 
 			if(!result.Succeeded)
 			{
@@ -87,7 +81,6 @@ public class PostController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Policy = "CanEditPost")]
     public async Task<IActionResult> Edit(int id, PostUpdateDto dto)
     {
 		if ((dto.ImageFile == null || dto.ImageFile.Length == 0) && string.IsNullOrEmpty(dto.Title))
@@ -96,12 +89,10 @@ public class PostController : Controller
 			return RedirectToAction(nameof(Index));
 		}
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
 		try
 		{
 			_logger.LogInformation("UpdatePostAsync called at {Time}", DateTime.UtcNow);
-			var result = await _postService.UpdatePostAsync(id, dto, userId!);
+			var result = await _postService.UpdatePostAsync(id, dto);
 
 			if(!result.Succeeded)
 			{
@@ -121,15 +112,12 @@ public class PostController : Controller
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	[Authorize(Policy = "CanEditPost")]
 	public async Task<IActionResult> Delete(int id)
 	{
-		var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
 		try
 		{
 			_logger.LogInformation("DeletePostAsync called at {Time}", DateTime.UtcNow);
-			var result = await _postService.DeletePostAsync(id, userId!);
+			var result = await _postService.DeletePostAsync(id);
 
 			if(!result.Succeeded)
 			{
